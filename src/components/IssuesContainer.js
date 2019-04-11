@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import moment from 'moment';
 import LabelContainer from "./LabelContainer";
 import "../App.css";
 
@@ -15,7 +16,7 @@ export class IssuesContainer extends Component {
             ))}
         </div>
           <div className = 'numberFooter'>
-            <p style = {{fontSize: '13.5px'}}>{number} {this.props.value.created_at} by {this.props.value.user.login}</p>
+            <p style = {{fontSize: '13.5px'}}>{number} {moment(this.props.value.created_at).fromNow()} by {this.props.value.user.login}</p>
           </div>
       </div>
     );
