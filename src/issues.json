@@ -148,7 +148,7 @@
         "default": false
       }
     ],
-    "state": "close",
+    "state": "open",
     "locked": false,
     "assignee": null,
     "assignees": [],

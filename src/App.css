@@ -18,11 +18,25 @@
   border-left: solid 1px;
   height: 40px;
   width: 120px;
+  cursor: pointer;
 }
 
 .issues-border {
   border-bottom: solid 1px #C2C2C2;
   display: flex;
+}
+
+select {
+  border-top: solid orange 3px;
+  border-right: solid 1px;
+  border-left: solid 1px;
+  height: 43px;
+  width: 100%;
+  border-bottom: none;
+  background-color: white;
+  font-size: 18px;
+  outline: none;
+  cursor: pointer;
 }
 
 .issues-container {
@@ -64,7 +78,6 @@
 .labels {
   display: flex;
   border: solid 1px;
-  color: black;
   align-items: center;
   text-align: center;
   width: 100%;
@@ -88,12 +101,12 @@ a:hover {
 }
 
 div button:focus {
-  background-color: grey;
+  background-color: #C2C2C2;
   color: white;
+  outline: none;
 }
 
 .issues-border button {
-  align-items: center;
   border-top: solid orange 3px;
   border-right: solid 1px;
   border-left: solid 1px;
@@ -102,4 +115,6 @@ div button:focus {
   border-bottom: none;
   background-color: white;
   font-size: 18px;
+  cursor: pointer;
 }
+
