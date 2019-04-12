@@ -88,6 +88,13 @@ class App extends Component {
     })
   }
 
+  searchHandler = e => {
+    // console.log(e.target.value);
+    this.setState({
+      data: issues.filter(issue => issue.title === e.target.value),
+    })
+  }
+
   render() {
     return (
       <div className="App">
@@ -101,6 +108,7 @@ class App extends Component {
           authors={authorList}
           authorsHandler = {this.authorDropDown}
           dataToSort = {this.sortHandler}
+          searchData = {this.searchHandler}
         />
         <div className="issues-data">
           {this.state.data.map(item => (

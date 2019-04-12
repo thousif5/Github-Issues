@@ -26,6 +26,10 @@ export class HeaderContainer extends Component {
     this.props.dataToSort(e);
   }
 
+  searchInput = e => {
+    this.props.searchData(e);
+  }
+
   render() {
     return (
       <div>
@@ -33,6 +37,7 @@ export class HeaderContainer extends Component {
           <a href="https://github.com/freeCodeCamp/freeCodeCamp">
             freeCodeCamp/<strong>freeCodeCamp</strong>
           </a>
+          <input onChange = {this.searchInput} type="text" placeholder="Search.."></input>
         </div>
         <div className="issues-border">
           <div onClick={this.allIssues} className="issues-tab">
