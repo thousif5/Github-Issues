@@ -21,7 +21,8 @@
 }
 
 .issues-border {
-  border-bottom: solid 1px;
+  border-bottom: solid 1px #C2C2C2;
+  display: flex;
 }
 
 .issues-container {
@@ -75,4 +76,30 @@
 
 .numberFooter {
   padding-left: 20px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  color: blue;
+}
+
+div button:focus {
+  background-color: grey;
+  color: white;
+}
+
+.issues-border button {
+  align-items: center;
+  border-top: solid orange 3px;
+  border-right: solid 1px;
+  border-left: solid 1px;
+  height: 43px;
+  width: 120px;
+  border-bottom: none;
+  background-color: white;
+  font-size: 18px;
 }
