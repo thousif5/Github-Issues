@@ -89,9 +89,8 @@ class App extends Component {
   }
 
   searchHandler = e => {
-    // console.log(e.target.value);
     this.setState({
-      data: issues.filter(issue => issue.title === e.target.value),
+      data: issues.filter(issue => issue.title.toLowerCase().indexOf(e.target.value)!== -1),
     })
   }
 

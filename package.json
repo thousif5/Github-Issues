@@ -29,5 +29,13 @@
   "main": "index.js",
   "devDependencies": {},
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/thousif7/github-issues-thousif.git"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/thousif7/github-issues-thousif/issues"
+  },
+  "homepage": "https://gitlab.com/thousif7/github-issues-thousif#readme"
 }
