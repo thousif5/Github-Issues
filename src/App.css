@@ -39,65 +39,13 @@ select {
   cursor: pointer;
 }
 
-.issues-container {
-  width: 100%;
-  height: 100%;
-  margin-left: 48px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  border-bottom: solid 1px #C2C2C2;
-  border-left: solid 1px #C2C2C2;
-}
-
-.issues-title {
-  padding-left: 20px;
-  padding-top: 15px;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.issues-title p {
-  margin: 0;
-}
-
-.label-flex {
-  display: flex;
-  justify-content: space-around;
-}
-
-.label-div {
-  display: flex;
-  padding-right: 10px;
-  height: 100%;
-}
-
-.labels {
-  display: flex;
-  border: solid 1px;
-  align-items: center;
-  text-align: center;
-  width: 100%;
-}
-
-.labels label {
-  padding: 5px;
-}
-
-.numberFooter {
-  padding-left: 20px;
-}
-
 a {
   text-decoration: none;
   color: black;
 }
 
 a:hover {
-  color: blue;
+  color: #008BFF;
 }
 
 div button:focus {
@@ -118,13 +66,9 @@ div button:focus {
   cursor: pointer;
 }
 
-.title input[type=text] {
-  float: right;
-  padding: 6px;
-  margin-top: 8px;
-  margin-right: 16px;
-  border: none;
-  font-size: 17px;
-  border: 1px solid #ccc;
-}
+
+
+
+
+
 

@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "font-awesome": "^4.7.0",
+    "material-icons": "^0.3.1",
     "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-paginate": "^6.3.0",
     "react-scripts": "2.1.8",
     "tinycolor2": "^1.4.1"
   },
@@ -37,5 +39,6 @@
   "bugs": {
     "url": "https://gitlab.com/thousif7/github-issues-thousif/issues"
   },
-  "homepage": "https://gitlab.com/thousif7/github-issues-thousif#readme"
+  "homepage": "https://gitlab.com/thousif7/github-issues-thousif#readme",
+  "keywords": []
 }

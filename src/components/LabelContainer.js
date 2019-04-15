@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import tinycolor from 'tinycolor2';
-import "../App.css";
+import './LabelContainer.css';
 
 export class LabelContainer extends Component {
   render() {
