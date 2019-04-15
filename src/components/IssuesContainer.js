@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import moment from "moment";
 import LabelContainer from "./LabelContainer";
 import './IssuesContainer.css';
-import "../App.css";
 
 export class IssuesContainer extends Component {
   render() {
