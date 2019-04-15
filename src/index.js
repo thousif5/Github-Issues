@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
+import { Route, Link, BrowserRouter as Router, Switch } from "react-router-dom";
 import App from "./App";
 import BodyContainer from "./components/BodyContainer";
 
@@ -10,7 +10,7 @@ const routing = (
     <div>
       <Switch>
         <Route path="/" component={App} exact />
-        <Route path="/id" component={BodyContainer} exact />
+        <Route path="/authors/:id" component={BodyContainer} exact />
       </Switch>
     </div>
   </Router>

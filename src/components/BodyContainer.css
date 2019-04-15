@@ -31,3 +31,20 @@ a {
 a:hover {
   color: #008BFF;
 }
+
+.body-data{
+  margin-left: 48px; 
+}
+
+.body-title {
+  font-size: 25px;
+}
+
+.dp-title {
+  display: flex;
+}
+
+.dp-img img {
+  width: 65px;
+  padding: 15px;
+}

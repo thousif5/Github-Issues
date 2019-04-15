@@ -7,6 +7,7 @@ export class IssuesContainer extends Component {
   render() {
     let number = `#${this.props.value.number}`;
     let pos = this.props.value.state;
+    let bodyUrl = `http://localhost:3000/authors/${this.props.value.number}`;
 
     const commentCount = () => {
       if(this.props.value.comments > 0) {
@@ -27,7 +28,7 @@ export class IssuesContainer extends Component {
             &#xf06a;&nbsp;&nbsp;
           </i>
           <p>
-            <a href="#">{this.props.value.title}</a>&nbsp;&nbsp;
+            <a href={bodyUrl}>{this.props.value.title}</a>&nbsp;&nbsp;
           </p>
           {this.props.value.labels.map(item => (
             <LabelContainer color={item.color} name={item.name} />
