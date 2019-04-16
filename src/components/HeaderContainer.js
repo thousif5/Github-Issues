@@ -7,11 +7,11 @@ export class HeaderContainer extends Component {
   };
 
   openButton = () => {
-    this.props.stateHandler("open");
+    this.props.openStateHandler("open");
   };
 
   closeButton = () => {
-    this.props.stateHandler("close");
+    this.props.closeStateHandler("close");
   };
 
   dropDown = e => {

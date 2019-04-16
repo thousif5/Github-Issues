@@ -12,7 +12,7 @@ class App extends Component {
   state = {
     open: "",
     close: "",
-    data: [],
+    data: null,
     labelList: [],
     authorList: [],
     issuesData: []
@@ -25,7 +25,13 @@ class App extends Component {
   };
 
   // set status
-  callbackStateHandler = status => {
+  openStateHandler = status => {
+    this.setState({
+      data: this.state.issuesData.filter(issue => issue.state === status)
+    });
+  };
+
+  closeStateHandler = status => {
     this.setState({
       data: this.state.data.filter(issue => issue.state === status)
     });
@@ -87,8 +93,10 @@ class App extends Component {
     }
   };
 
-  setData = (value) => {
-    fetch(`https://api.github.com/repos/freeCodeCamp/freeCodeCamp/issues?page=${value}`)
+  setData = value => {
+    fetch(
+      `https://api.github.com/repos/freeCodeCamp/freeCodeCamp/issues?page=${value}`
+    )
       .then(res => res.json())
       .then(issues =>
         this.setState({
@@ -108,39 +116,60 @@ class App extends Component {
           issuesData: issues
         })
       );
-  }
+  };
 
   componentDidMount() {
     this.setData(1);
   }
 
   handlePage = e => {
-    this.setData(e.selected+1);
-  }
+    this.setData(e.selected + 1);
+  };
 
   render() {
-    return (
-      <div className="App">
-        <HeaderContainer
-          issuesHandler={this.issueData}
-          stateHandler={this.callbackStateHandler}
-          openState={this.state.open}
-          closeState={this.state.close}
-          labels={labelList}
-          labelsHandler={this.labelDropDown}
-          authors={authorList}
-          authorsHandler={this.authorDropDown}
-          dataToSort={this.sortHandler}
-          searchData={this.searchHandler}
-        />
-        <div className="issues-data">
-          {this.state.data.map(item => (
-            <IssuesContainer value={item} />
-          ))}
+    if (this.state.data === null) {
+      return (
+        // loading animation css
+        <div className="loading">
+          <h1>Be patient, We're working on it</h1>
+          <div class="sk-cube-grid">
+            <div class="sk-cube sk-cube1" />
+            <div class="sk-cube sk-cube2" />
+            <div class="sk-cube sk-cube3" />
+            <div class="sk-cube sk-cube4" />
+            <div class="sk-cube sk-cube5" />
+            <div class="sk-cube sk-cube6" />
+            <div class="sk-cube sk-cube7" />
+            <div class="sk-cube sk-cube8" />
+            <div class="sk-cube sk-cube9" />
+          </div>
         </div>
-        <Pagination handlePage = {this.handlePage} />
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="App">
+          <HeaderContainer
+            issuesHandler={this.issueData}
+            closeStateHandler={this.closeStateHandler}
+            openStateHandler={this.openStateHandler}
+            openState={this.state.open}
+            closeState={this.state.close}
+            labels={labelList}
+            labelsHandler={this.labelDropDown}
+            authors={authorList}
+            authorsHandler={this.authorDropDown}
+            dataToSort={this.sortHandler}
+            searchData={this.searchHandler}
+          />
+          <div className="issues-data">
+            {this.state.data.map(item => (
+              <IssuesContainer value={item} />
+            ))}
+          </div>
+          <Pagination handlePage={this.handlePage} />
+        </div>
+      );
+    }
   }
 }
 export default App;
