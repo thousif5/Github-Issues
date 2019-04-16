@@ -61,6 +61,62 @@ a:hover {
   padding-top: 100px;
 }
 
+.comments-to-populate {
+  display: flex;
+}
+
+.comment-user {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.comment-user button {
+  border: solid 1px;
+  background: white;
+  margin-left: 10px;
+  height: 20px;
+  width: 50%;
+}
+
+.comment-user p {
+  margin-left: 10px;
+}
+
+.avatar-user {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-user h5 {
+  font-size: 12px;
+}
+
+.avatar-user img {
+  width: 25px;
+  height: 25px;
+  padding: 8px;
+}
+
+.add-comments {
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.add-comments input {
+  width: 85%;
+  height: 30px;
+  border: 0;
+  border-bottom: solid 1px;
+  outline: none;
+}
+
+input::placeholder {
+  font-size: 15px;
+}
+
+/* animation css */
 .sk-cube-grid {
   width: 200px;
   height: 200px;

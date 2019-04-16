@@ -3,11 +3,12 @@ import "./BodyContainer.css";
 import ReactMarkdown from "react-markdown";
 export class BodyContainer extends Component {
   state = {
-    data: null
+    data: null,
+    comments: [],
   };
 
   getData(id) {
-    fetch(`https://api.github.com/repos/freeCodeCamp/freeCodeCamp/issues/${id}`)
+    fetch(`https://api.github.com/repos/Harsha1718/github-issues/issues/${id}`)
       .then(res => res.json())
       .then(bodyData => {
         this.setState({
@@ -16,15 +17,49 @@ export class BodyContainer extends Component {
       });
   }
 
+  getComments(id) {
+    fetch(`https://api.github.com/repos/Harsha1718/github-issues/issues/${id}/comments`)
+      .then(res => res.json())
+      .then(commentData => {
+        this.setState({
+          comments: commentData
+        });
+      });
+  }
+
+  addComment = (e) => {
+    if(e.key === 'Enter') {
+      fetch(`https://api.github.com/repos/Harsha1718/github-issues/issues/${this.state.data.number}/comments?access_token=15e06e7d9a0b88ea3615c5e37caf4b494d22a261`,
+      {method: 'POST', body: JSON.stringify({body: e.target.value})})
+      .then(commentData => commentData.json())
+      .then(addedComments => {
+        let tempArray = this.state.comments;
+        tempArray.push(addedComments);
+        this.setState({
+          comments: tempArray,
+        })
+      });
+      e.target.value = '';
+    }
+  }
+
+  deleteComment = e => {
+    fetch(`https://api.github.com/repos/Harsha1718/github-issues/issues/comments/${e.target.id}?access_token=15e06e7d9a0b88ea3615c5e37caf4b494d22a261`,{method: 'DELETE'})
+    .catch(err => console.log(err))
+    let update = this.state.comments.filter(ele=> parseInt(ele.id)!==parseInt(e.target.id))
+    this.setState({comments:update}); 
+  }
+
   componentDidMount() {
     this.getData(this.props.match.params.id);
+    this.getComments(this.props.match.params.id);
   }
 
   render() {
     if (this.state.data === null) {
       return (
-        <div className = 'loading'>
-        <h1>Be patient, We're working on it</h1>
+        <div className="loading">
+          <h1>Be patient, We're working on it</h1>
           <div class="sk-cube-grid">
             <div class="sk-cube sk-cube1" />
             <div class="sk-cube sk-cube2" />
@@ -64,8 +99,28 @@ export class BodyContainer extends Component {
               <div className="dp-img">
                 <img src={this.state.data.user.avatar_url} alt="" />
               </div>
-              <div>
-                <ReactMarkdown>{this.state.data.body}</ReactMarkdown>
+              <div className="issue-body-comments">
+                <div>
+                  <ReactMarkdown skipHtml={true}>
+                    {this.state.data.body}
+                  </ReactMarkdown>
+                </div>
+                <div><h3>Comments:</h3></div>
+                {this.state.comments.map((comment) => 
+                  <div className = 'comments-to-populate'>
+                  <div className = 'avatar-user'>
+                    <img src = {comment.user.avatar_url} alt = ''></img>
+                    <h5><a href = {comment.user.html_url}>{comment.user.login}:</a></h5>
+                  </div>
+                  <div className = 'comment-user'>
+                    <p>{comment.body}</p>
+                    <button id = {comment.id} onClick = {this.deleteComment} className = 'delete-button'>Delete</button>
+                  </div>
+                </div>
+                )}
+                <div className = 'add-comments'>
+                  <input onKeyPress = {this.addComment} type = 'text' placeholder = 'Add Comments'></input>
+                </div>
               </div>
             </div>
           </div>
