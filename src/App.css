@@ -1,6 +1,17 @@
 .title {
   padding: 20px;
   font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.signIn {
+  height: 35px;
+  width: 80px;
+  background-color: black;
+  color: white;
+  border: solid 1px;
 }
 
 .title a {

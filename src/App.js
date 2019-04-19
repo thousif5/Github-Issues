@@ -95,7 +95,7 @@ class App extends Component {
 
   setData = value => {
     fetch(
-      `https://api.github.com/repos/Harsha1718/github-issues/issues?page=${value}`
+      `https://api.github.com/repos/thousif7/test-issues/issues?page=${value}`
     )
       .then(res => res.json())
       .then(issues =>

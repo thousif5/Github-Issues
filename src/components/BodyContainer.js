@@ -1,6 +1,10 @@
 import React, { Component } from "react";
+// import { newToken } from "./auth";
 import "./BodyContainer.css";
 import ReactMarkdown from "react-markdown";
+
+// const token = '15e06e7d9a0b88ea3615c5e37caf4b494d22a261';
+let newToken = localStorage.getItem("data");
 export class BodyContainer extends Component {
   state = {
     data: null,
@@ -8,47 +12,67 @@ export class BodyContainer extends Component {
   };
 
   getData(id) {
-    fetch(`https://api.github.com/repos/Harsha1718/github-issues/issues/${id}`)
-      .then(res => res.json())
-      .then(bodyData => {
-        this.setState({
-          data: bodyData
+    if (newToken !== null) {
+      fetch(
+        `https://api.github.com/repos/thousif7/test-issues/issues/${id}`
+      )
+        .then(res => res.json())
+        .then(bodyData => {
+          this.setState({
+            data: bodyData
+          });
         });
-      });
-  }
-
-  getComments(id) {
-    fetch(`https://api.github.com/repos/Harsha1718/github-issues/issues/${id}/comments`)
-      .then(res => res.json())
-      .then(commentData => {
-        this.setState({
-          comments: commentData
-        });
-      });
-  }
-
-  addComment = (e) => {
-    if(e.key === 'Enter') {
-      fetch(`https://api.github.com/repos/Harsha1718/github-issues/issues/${this.state.data.number}/comments?access_token=15e06e7d9a0b88ea3615c5e37caf4b494d22a261`,
-      {method: 'POST', body: JSON.stringify({body: e.target.value})})
-      .then(commentData => commentData.json())
-      .then(addedComments => {
-        let tempArray = this.state.comments;
-        tempArray.push(addedComments);
-        this.setState({
-          comments: tempArray,
-        })
-      });
-      e.target.value = '';
     }
   }
 
-  deleteComment = e => {
-    fetch(`https://api.github.com/repos/Harsha1718/github-issues/issues/comments/${e.target.id}?access_token=15e06e7d9a0b88ea3615c5e37caf4b494d22a261`,{method: 'DELETE'})
-    .catch(err => console.log(err))
-    let update = this.state.comments.filter(ele=> parseInt(ele.id)!==parseInt(e.target.id))
-    this.setState({comments:update}); 
+  getComments(id) {
+    if (newToken !== null) {
+      fetch(
+        `https://api.github.com/repos/thousif7/test-issues/issues/${id}/comments`
+      )
+        .then(res => res.json())
+        .then(commentData => {
+          this.setState({
+            comments: commentData
+          });
+        });
+    }
   }
+
+  addComment = e => {
+    if (newToken !== null && e.key === "Enter") {
+        fetch(
+          `https://api.github.com/repos/thousif7/test-issues/issues/${
+            this.state.data.number
+          }/comments?access_token=${newToken}`,
+          { method: "POST", body: JSON.stringify({ body: e.target.value }) }
+        )
+          .then(commentData => commentData.json())
+          .then(addedComments => {
+            let tempArray = this.state.comments;
+            tempArray.push(addedComments);
+            this.setState({
+              comments: tempArray
+            });
+          });
+        e.target.value = "";
+    }
+  };
+
+  deleteComment = e => {
+    if (newToken !== null) {
+      fetch(
+        `https://api.github.com/repos/thousif7/test-issues/issues/comments/${
+          e.target.id
+        }?access_token=${newToken}`,
+        { method: "DELETE" }
+      ).catch(err => console.log(err));
+      let update = this.state.comments.filter(
+        ele => parseInt(ele.id) !== parseInt(e.target.id)
+      );
+      this.setState({ comments: update });
+    }
+  };
 
   componentDidMount() {
     this.getData(this.props.match.params.id);
@@ -56,6 +80,7 @@ export class BodyContainer extends Component {
   }
 
   render() {
+    let homeUrl = "http://localhost:3000";
     if (this.state.data === null) {
       return (
         <div className="loading">
@@ -78,16 +103,18 @@ export class BodyContainer extends Component {
         <div>
           <div className="header-body">
             <div className="title">
-              <a href="https://github.com/freeCodeCamp/freeCodeCamp">
+              <a href="https://github.com/thousif7/test-issues">
                 freeCodeCamp/<strong>freeCodeCamp</strong>
               </a>
             </div>
             <div className="issues-border">
-              <div onClick={this.allIssues} className="issues-tab">
+              <div className="issues-tab">
                 <i style={{ fontSize: "24px" }} className="fa">
                   &#xf06a;&nbsp;
                 </i>
-                <p>issues</p>
+                <p>
+                  <a href={homeUrl}>issues</a>
+                </p>
               </div>
             </div>
           </div>
@@ -105,21 +132,37 @@ export class BodyContainer extends Component {
                     {this.state.data.body}
                   </ReactMarkdown>
                 </div>
-                <div><h3>Comments:</h3></div>
-                {this.state.comments.map((comment) => 
-                  <div className = 'comments-to-populate'>
-                  <div className = 'avatar-user'>
-                    <img src = {comment.user.avatar_url} alt = ''></img>
-                    <h5><a href = {comment.user.html_url}>{comment.user.login}:</a></h5>
-                  </div>
-                  <div className = 'comment-user'>
-                    <p>{comment.body}</p>
-                    <button id = {comment.id} onClick = {this.deleteComment} className = 'delete-button'>Delete</button>
-                  </div>
+                <div>
+                  <h3>Comments:</h3>
                 </div>
-                )}
-                <div className = 'add-comments'>
-                  <input onKeyPress = {this.addComment} type = 'text' placeholder = 'Add Comments'></input>
+                {this.state.comments.map(comment => (
+                  <div className="comments-to-populate">
+                    <div className="avatar-user">
+                      <img src={comment.user.avatar_url} alt="" />
+                      <h5>
+                        <a href={comment.user.html_url}>
+                          {comment.user.login}:
+                        </a>
+                      </h5>
+                    </div>
+                    <div className="comment-user">
+                      <p>{comment.body}</p>
+                      <button
+                        id={comment.id}
+                        onClick={this.deleteComment}
+                        className="delete-button"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <div className="add-comments">
+                  <input
+                    onKeyPress={this.addComment}
+                    type="text"
+                    placeholder="Add Comments"
+                  />
                 </div>
               </div>
             </div>

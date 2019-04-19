@@ -1,7 +1,36 @@
 import React, { Component } from "react";
+import {auth, signOut} from './auth';
 import "../App.css";
 
+let displayName = localStorage.getItem('name');
+if(displayName !== null || displayName !== "") {
+  var name  = displayName;
+}
+else {
+  name = null;
+}
 export class HeaderContainer extends Component {
+  state = {
+    data: 'sign in'
+  }
+
+  importToken = () => {
+    if(this.state.data === 'sign in') {
+      auth();
+      this.setState({
+        data: 'sign out'
+      })
+    }
+    if(this.state.data === 'sign out') {
+      signOut();
+      this.setState({
+        data: 'sign in'
+      })
+    }
+  }
+
+
+
   allIssues = () => {
     this.props.issuesHandler();
   };
@@ -29,15 +58,19 @@ export class HeaderContainer extends Component {
   searchInput = e => {
     this.props.searchData(e);
   }
+  
+  
 
   render() {
     return (
       <div>
         <div className="title">
-          <a href="https://github.com/freeCodeCamp/freeCodeCamp">
-            freeCodeCamp/<strong>freeCodeCamp</strong>
+          <a href="https://github.com/thousif7/test-issues">
+            thousif7/<strong>test-issues</strong>
           </a>
           <input onKeyUp = {this.searchInput} type="text" placeholder="Search.."></input>
+          <p>{this.state.data === 'sign out' ? name : null}</p>
+          <button onClick = {this.importToken} className = 'signIn'>{this.state.data}</button>
         </div>
         <div className="issues-border">
           <div onClick={this.allIssues} className="issues-tab">

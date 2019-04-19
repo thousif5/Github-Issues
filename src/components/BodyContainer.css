@@ -49,18 +49,6 @@ a:hover {
   padding: 15px;
 }
 
-.loading{
-  background-color: #999999;
-  height: 939px;
-  width: 100%;
-  padding-top: 10px;
-}
-
-.loading h1 {
-  text-align: center;
-  padding-top: 100px;
-}
-
 .comments-to-populate {
   display: flex;
 }
@@ -117,6 +105,18 @@ input::placeholder {
 }
 
 /* animation css */
+.loading{
+  background-color: white;
+  height: 939px;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.loading h1 {
+  text-align: center;
+  padding-top: 100px;
+}
+
 .sk-cube-grid {
   width: 200px;
   height: 200px;
@@ -127,7 +127,7 @@ input::placeholder {
 .sk-cube-grid .sk-cube {
   width: 33%;
   height: 33%;
-  background-color: #008BFF;
+  background-color: black;
   float: left;
   -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
           animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; 
