@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import ReactPaginate from 'react-paginate';
 import './Pagination.css'
 class Pagination extends Component {
+    
    render() {
+       console.log(this.props.page,"insndie pagination componenet")
        return (
-           <ReactPaginate className="pages" previousLabel={'previous'} nextLabel={'next'} pageCount={100} onPageChange={this.props.handlePage} activeClassName={"active-page"} containerClassName="pagination">
+           <ReactPaginate className="pages" previousLabel={'previous'} nextLabel={'next'} pageCount={3} onPageChange={this.props.handlePage} activeClassName={"active-page"} containerClassName="pagination" forcePage = {this.props.page}>
            </ReactPaginate>
        );
    }

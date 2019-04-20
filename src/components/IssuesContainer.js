@@ -7,13 +7,13 @@ export class IssuesContainer extends Component {
   render() {
     let number = `#${this.props.value.number}`;
     let pos = this.props.value.state;
-    let bodyUrl = `http://localhost:3000/authors/${this.props.value.number}`;
+    let bodyUrl = `http://localhost:3000/issue/${this.props.value.number}`;
 
     const commentCount = () => {
       if(this.props.value.comments > 0) {
         return (
           <div className="comments">
-            <a href = {this.props.value.comments_url}><i style = {{fontSize: '24px'}} className="far fa-comment-alt">&nbsp;{this.props.value.comments}</i></a>
+            <a href = {bodyUrl}><i style = {{fontSize: '24px'}} className="far fa-comment-alt">&nbsp;{this.props.value.comments}</i></a>
           </div>
         )
       }

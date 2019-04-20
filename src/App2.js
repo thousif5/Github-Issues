@@ -8,16 +8,21 @@ import "./App.css";
 
 let labelList = [];
 let authorList = [];
-class App extends Component {
-  state = {
-    open: "",
-    close: "",
-    data: null,
-    labelList: [],
-    authorList: [],
-    issuesData: [],
-    page: 0
-  };
+class App2 extends Component {
+  constructor() {
+    super();
+    this.state = {
+      open: "",
+      close: "",
+      data: null,
+      labelList: [],
+      authorList: [],
+      issuesData: [],
+      page: 0
+    };
+
+    this.setData = this.setData.bind(this);
+  }
 
   issueData = () => {
     this.setState({
@@ -93,14 +98,15 @@ class App extends Component {
       });
     }
   };
-
-  setData = value => {
+  // self =this;
+  setData(value) {
+    let self = this;
     fetch(
-      `https://api.github.com/repos/thousif7/test-issues/issues`
+      `https://api.github.com/repos/thousif7/test-issues/issues?page=${value}`
     )
       .then(res => res.json())
-      .then(issues =>
-        this.setState({
+      .then(issues => {
+        self.setState({
           data: issues,
           open: issues.filter(item => item.state === "open").length,
           close: issues.filter(item => item.state === "close").length,
@@ -115,21 +121,43 @@ class App extends Component {
               authorList.push(issue.user.login);
           }),
           issuesData: issues
-        
-        })
-      );
-  };
+        });
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
 
   componentDidMount() {
-    this.setData(1);
+    this.setState(
+      {
+        page: this.props.children[1].match.params.pageNo
+      },
+      () => {
+        this.setData(this.props.children[1].match.params.pageNo);
+      }
+    );
+  }
+
+  componentDidUpdate(props) {
+    if (this.props !== props) {
+      this.setState(
+        {
+          page: this.props.children[1].match.params.pageNo
+        },
+        () => {
+          this.setData(this.props.children[1].match.params.pageNo);
+        }
+      );
+
+      // this.setData(this.props.children[1].match.params.pageNo)
+    }
   }
 
   handlePage = e => {
-    let page = e.selected +1;
+    let page = e.selected + 1;
     this.props.children[1].history.push("/page/" + page);
-    // this.setData(page);
-
-    // this.props.data.history.push("/page/" + e.selected+1)
+    // this.setData(e.selected + 1);
   };
 
   render() {
@@ -172,10 +200,13 @@ class App extends Component {
               <IssuesContainer value={item} />
             ))}
           </div>
-          <Pagination handlePage={this.handlePage} page = {this.state.page} />
+          <Pagination
+            handlePage={this.handlePage}
+            page={parseInt(this.props.children[1].match.params.pageNo) - 1}
+          />
         </div>
       );
     }
   }
 }
-export default App;
+export default App2;

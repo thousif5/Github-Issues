@@ -4,18 +4,16 @@ import "./BodyContainer.css";
 import ReactMarkdown from "react-markdown";
 
 // const token = '15e06e7d9a0b88ea3615c5e37caf4b494d22a261';
-let newToken = localStorage.getItem("data");
+let newToken = sessionStorage.getItem("data");
 export class BodyContainer extends Component {
   state = {
     data: null,
-    comments: [],
+    comments: []
   };
 
   getData(id) {
     if (newToken !== null) {
-      fetch(
-        `https://api.github.com/repos/thousif7/test-issues/issues/${id}`
-      )
+      fetch(`https://api.github.com/repos/thousif7/test-issues/issues/${id}`)
         .then(res => res.json())
         .then(bodyData => {
           this.setState({
@@ -41,21 +39,21 @@ export class BodyContainer extends Component {
 
   addComment = e => {
     if (newToken !== null && e.key === "Enter") {
-        fetch(
-          `https://api.github.com/repos/thousif7/test-issues/issues/${
-            this.state.data.number
-          }/comments?access_token=${newToken}`,
-          { method: "POST", body: JSON.stringify({ body: e.target.value }) }
-        )
-          .then(commentData => commentData.json())
-          .then(addedComments => {
-            let tempArray = this.state.comments;
-            tempArray.push(addedComments);
-            this.setState({
-              comments: tempArray
-            });
+      fetch(
+        `https://api.github.com/repos/thousif7/test-issues/issues/${
+          this.state.data.number
+        }/comments?access_token=${newToken}`,
+        { method: "POST", body: JSON.stringify({ body: e.target.value }) }
+      )
+        .then(commentData => commentData.json())
+        .then(addedComments => {
+          let tempArray = this.state.comments;
+          tempArray.push(addedComments);
+          this.setState({
+            comments: tempArray
           });
-        e.target.value = "";
+        });
+      e.target.value = "";
     }
   };
 
@@ -104,7 +102,7 @@ export class BodyContainer extends Component {
           <div className="header-body">
             <div className="title">
               <a href="https://github.com/thousif7/test-issues">
-                freeCodeCamp/<strong>freeCodeCamp</strong>
+                thousif7/<strong>test-issues</strong>
               </a>
             </div>
             <div className="issues-border">

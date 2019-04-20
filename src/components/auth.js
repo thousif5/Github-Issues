@@ -27,8 +27,8 @@ function auth() {
       //  token = '2b10731d3ae05309d922bbf103b359b89cd72f39'
       // The signed-in user info.
       user = result.user;
-      localStorage.setItem("data", token);
-      localStorage.setItem("name", user.email);
+      sessionStorage.setItem("data", token);
+      sessionStorage.setItem("name", user.email);
       // ...
     })
     .catch(function(error) {

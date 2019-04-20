@@ -1,35 +1,27 @@
 import React, { Component } from "react";
-import {auth, signOut} from './auth';
+import { auth, signOut } from "./auth";
 import "../App.css";
 
-let displayName = localStorage.getItem('name');
-if(displayName !== null || displayName !== "") {
-  var name  = displayName;
-}
-else {
-  name = null;
-}
+let name = sessionStorage.getItem("name");
 export class HeaderContainer extends Component {
   state = {
-    data: 'sign in'
-  }
+    data: "sign in"
+  };
 
   importToken = () => {
-    if(this.state.data === 'sign in') {
+    if (this.state.data === "sign in") {
       auth();
       this.setState({
-        data: 'sign out'
-      })
+        data: "sign out"
+      });
     }
-    if(this.state.data === 'sign out') {
+    if (this.state.data === "sign out") {
       signOut();
       this.setState({
-        data: 'sign in'
-      })
+        data: "sign in"
+      });
     }
-  }
-
-
+  };
 
   allIssues = () => {
     this.props.issuesHandler();
@@ -49,17 +41,15 @@ export class HeaderContainer extends Component {
 
   authorDown = e => {
     this.props.authorsHandler(e);
-  }
+  };
 
   sortData = e => {
     this.props.dataToSort(e);
-  }
+  };
 
   searchInput = e => {
     this.props.searchData(e);
-  }
-  
-  
+  };
 
   render() {
     return (
@@ -68,9 +58,15 @@ export class HeaderContainer extends Component {
           <a href="https://github.com/thousif7/test-issues">
             thousif7/<strong>test-issues</strong>
           </a>
-          <input onKeyUp = {this.searchInput} type="text" placeholder="Search.."></input>
-          <p>{this.state.data === 'sign out' ? name : null}</p>
-          <button onClick = {this.importToken} className = 'signIn'>{this.state.data}</button>
+          <input
+            onKeyUp={this.searchInput}
+            type="text"
+            placeholder="Search.."
+          />
+          <p>{this.state.data === "sign out" ? name : null}</p>
+          <button onClick={this.importToken} className="signIn">
+            {this.state.data}
+          </button>
         </div>
         <div className="issues-border">
           <div onClick={this.allIssues} className="issues-tab">
@@ -99,19 +95,21 @@ export class HeaderContainer extends Component {
               ))}
             </select>
           </div>
-          <div className = 'author-drop'>
-            <select onChange = {this.authorDown} defaultValue = "Authors">
-            <option value="Authors" disabled>
+          <div className="author-drop">
+            <select onChange={this.authorDown} defaultValue="Authors">
+              <option value="Authors" disabled>
                 &nbsp;&nbsp;Authors
               </option>
-              {this.props.authors.map(author => 
-                 <option>{author}</option>
-              )}
+              {this.props.authors.map(author => (
+                <option>{author}</option>
+              ))}
             </select>
           </div>
-          <div className = 'sortDrop'>
-            <select onChange = {this.sortData} defaultValue = "Sort">
-              <option value = 'Sort' disabled>&nbsp;&nbsp;Sort</option>
+          <div className="sortDrop">
+            <select onChange={this.sortData} defaultValue="Sort">
+              <option value="Sort" disabled>
+                &nbsp;&nbsp;Sort
+              </option>
               <option>Oldest</option>
               <option>Newest</option>
               <option>Recently Upadted</option>
