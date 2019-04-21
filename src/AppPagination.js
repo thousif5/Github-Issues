@@ -2,20 +2,22 @@ import React, { Component } from "react";
 import HeaderContainer from "./components/HeaderContainer";
 import IssuesContainer from "./components/IssuesContainer";
 import Pagination from "./components/Pagination";
-// import issues from "./issues.json";
 import moment from "moment";
 import "./App.css";
 
-let labelList = [];
+const repoData = {
+  owner : 'thousif7',
+  repo : 'test-issues'
+}
+let repoOwner = repoData.owner+'/'+repoData.repo;
 let authorList = [];
-class App2 extends Component {
+class AppPagination extends Component {
   constructor() {
     super();
     this.state = {
       open: "",
       close: "",
       data: null,
-      labelList: [],
       authorList: [],
       issuesData: [],
       page: 0
@@ -44,18 +46,13 @@ class App2 extends Component {
   };
 
   labelDropDown = e => {
-    let tempArray = this.state.data.filter(issue => {
-      let temp = false;
-      issue.labels.forEach(label => {
-        if (label.name === e.target.value) {
-          temp = true;
-        }
-      });
-      return temp;
-    });
+    fetch(`https://api.github.com/repos/${repoOwner}/issues?labels=${e}`)
+    .then(res => res.json())
+    .then(labelFiltered => 
     this.setState({
-      data: tempArray
-    });
+      data: labelFiltered
+    })
+    )
   };
 
   authorDropDown = e => {
@@ -98,11 +95,11 @@ class App2 extends Component {
       });
     }
   };
-  // self =this;
+  
   setData(value) {
     let self = this;
     fetch(
-      `https://api.github.com/repos/thousif7/test-issues/issues?page=${value}`
+      `https://api.github.com/repos/${repoOwner}/issues?page=${value}&per_page=4`
     )
       .then(res => res.json())
       .then(issues => {
@@ -110,12 +107,6 @@ class App2 extends Component {
           data: issues,
           open: issues.filter(item => item.state === "open").length,
           close: issues.filter(item => item.state === "close").length,
-          labelList: issues.forEach(issue => {
-            issue.labels.forEach(label => {
-              if (!labelList.includes(label.name)) labelList.push(label.name);
-            });
-          }),
-
           authorList: issues.forEach(issue => {
             if (!authorList.includes(issue.user.login))
               authorList.push(issue.user.login);
@@ -149,15 +140,12 @@ class App2 extends Component {
           this.setData(this.props.children[1].match.params.pageNo);
         }
       );
-
-      // this.setData(this.props.children[1].match.params.pageNo)
     }
   }
 
   handlePage = e => {
     let page = e.selected + 1;
     this.props.children[1].history.push("/page/" + page);
-    // this.setData(e.selected + 1);
   };
 
   render() {
@@ -183,12 +171,13 @@ class App2 extends Component {
       return (
         <div className="App">
           <HeaderContainer
+            repoData = {repoData}
+            repoOwner = {repoOwner}
             issuesHandler={this.issueData}
             closeStateHandler={this.closeStateHandler}
             openStateHandler={this.openStateHandler}
             openState={this.state.open}
             closeState={this.state.close}
-            labels={labelList}
             labelsHandler={this.labelDropDown}
             authors={authorList}
             authorsHandler={this.authorDropDown}
@@ -209,4 +198,4 @@ class App2 extends Component {
     }
   }
 }
-export default App2;
+export default AppPagination;

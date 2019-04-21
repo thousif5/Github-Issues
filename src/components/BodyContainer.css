@@ -87,7 +87,8 @@ a:hover {
 }
 
 .add-comments {
-  padding-top: 10px;
+  padding-top: 0px;
+  padding-left: 10px;
   display: flex;
   align-items: center;
 }
@@ -102,6 +103,16 @@ a:hover {
 
 input::placeholder {
   font-size: 15px;
+}
+
+.comment-username {
+  display: flex;
+  align-items: center;
+  justify-content: space-between
+}
+
+.comment-username p {
+  font-size: 13px;
 }
 
 /* animation css */

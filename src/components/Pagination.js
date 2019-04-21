@@ -4,9 +4,8 @@ import './Pagination.css'
 class Pagination extends Component {
     
    render() {
-       console.log(this.props.page,"insndie pagination componenet")
        return (
-           <ReactPaginate className="pages" previousLabel={'previous'} nextLabel={'next'} pageCount={3} onPageChange={this.props.handlePage} activeClassName={"active-page"} containerClassName="pagination" forcePage = {this.props.page}>
+           <ReactPaginate className="pages" previousLabel={'previous'} nextLabel={'next'} pageCount={2} onPageChange={this.props.handlePage} activeClassName={"active-page"} containerClassName="pagination" forcePage = {this.props.page}>
            </ReactPaginate>
        );
    }

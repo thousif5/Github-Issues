@@ -1,9 +1,12 @@
 import React, { Component } from "react";
-// import { newToken } from "./auth";
 import "./BodyContainer.css";
 import ReactMarkdown from "react-markdown";
 
-// const token = '15e06e7d9a0b88ea3615c5e37caf4b494d22a261';
+const repoData = {
+  owner : 'thousif7',
+  repo : 'test-issues'
+}
+let repoOwner = repoData.owner+'/'+repoData.repo;
 let newToken = sessionStorage.getItem("data");
 export class BodyContainer extends Component {
   state = {
@@ -13,7 +16,7 @@ export class BodyContainer extends Component {
 
   getData(id) {
     if (newToken !== null) {
-      fetch(`https://api.github.com/repos/thousif7/test-issues/issues/${id}`)
+      fetch(`https://api.github.com/repos/${repoOwner}/issues/${id}`)
         .then(res => res.json())
         .then(bodyData => {
           this.setState({
@@ -26,7 +29,7 @@ export class BodyContainer extends Component {
   getComments(id) {
     if (newToken !== null) {
       fetch(
-        `https://api.github.com/repos/thousif7/test-issues/issues/${id}/comments`
+        `https://api.github.com/repos/${repoOwner}/issues/${id}/comments`
       )
         .then(res => res.json())
         .then(commentData => {
@@ -40,7 +43,7 @@ export class BodyContainer extends Component {
   addComment = e => {
     if (newToken !== null && e.key === "Enter") {
       fetch(
-        `https://api.github.com/repos/thousif7/test-issues/issues/${
+        `https://api.github.com/repos/${repoOwner}/issues/${
           this.state.data.number
         }/comments?access_token=${newToken}`,
         { method: "POST", body: JSON.stringify({ body: e.target.value }) }
@@ -60,7 +63,7 @@ export class BodyContainer extends Component {
   deleteComment = e => {
     if (newToken !== null) {
       fetch(
-        `https://api.github.com/repos/thousif7/test-issues/issues/comments/${
+        `https://api.github.com/repos/${repoOwner}/issues/comments/${
           e.target.id
         }?access_token=${newToken}`,
         { method: "DELETE" }
@@ -101,8 +104,8 @@ export class BodyContainer extends Component {
         <div>
           <div className="header-body">
             <div className="title">
-              <a href="https://github.com/thousif7/test-issues">
-                thousif7/<strong>test-issues</strong>
+              <a href={`https://github.com/${repoOwner}`}>
+                {repoData.owner}/<strong>{repoData.repo}</strong>
               </a>
             </div>
             <div className="issues-border">
@@ -155,12 +158,17 @@ export class BodyContainer extends Component {
                     </div>
                   </div>
                 ))}
+                <div className = 'comment-username'>
+                <div>
+                  <h5>thousif7:</h5>
+                </div>
                 <div className="add-comments">
                   <input
                     onKeyPress={this.addComment}
                     type="text"
-                    placeholder="Add Comments"
+                    placeholder=" Add Comments"
                   />
+                </div>
                 </div>
               </div>
             </div>

@@ -1,11 +1,23 @@
 import React, { Component } from "react";
 import { auth, signOut } from "./auth";
+import MultipleSelect from "./MultipleSelect";
 import "../App.css";
 
 let name = sessionStorage.getItem("name");
 export class HeaderContainer extends Component {
   state = {
-    data: "sign in"
+    data: "sign in",
+    labels: []
+  };
+
+  getLabels = () => {
+    fetch(`https://api.github.com/repos/${this.props.repoOwner}/labels`)
+      .then(res => res.json())
+      .then(labelsData =>
+        this.setState({
+          labels: labelsData
+        })
+      );
   };
 
   importToken = () => {
@@ -25,6 +37,14 @@ export class HeaderContainer extends Component {
 
   allIssues = () => {
     this.props.issuesHandler();
+  };
+
+  reset = () => {
+    var authorDropDown = document.getElementById("authorDropDown");
+    authorDropDown.selectedIndex = 0;
+    var sortDropDown = document.getElementById("sortDropDown");
+    sortDropDown.selectedIndex = 0;
+    this.allIssues();
   };
 
   openButton = () => {
@@ -51,13 +71,20 @@ export class HeaderContainer extends Component {
     this.props.searchData(e);
   };
 
+  componentDidMount() {
+    this.getLabels();
+  }
+
   render() {
+    let homeUrl = "http://localhost:3000";
     return (
       <div>
         <div className="title">
-          <a href="https://github.com/thousif7/test-issues">
-            thousif7/<strong>test-issues</strong>
+          <a href={`https://github.com/${this.props.repoOwner}`}>
+            {this.props.repoData.owner}/
+            <strong>{this.props.repoData.repo}</strong>
           </a>
+          <input id="reset-button" onClick={this.reset} type="reset" />
           <input
             onKeyUp={this.searchInput}
             type="text"
@@ -69,11 +96,13 @@ export class HeaderContainer extends Component {
           </button>
         </div>
         <div className="issues-border">
-          <div onClick={this.allIssues} className="issues-tab">
+          <div className="issues-tab">
             <i style={{ fontSize: "24px" }} className="fa">
               &#xf06a;&nbsp;
             </i>
-            <p>issues</p>
+            <a href={homeUrl}>
+              <p>issues</p>
+            </a>
           </div>
           <div>
             <button onClick={this.openButton}>
@@ -85,18 +114,12 @@ export class HeaderContainer extends Component {
               closed {this.props.closeState}
             </button>
           </div>
-          <div className="dropDown-list">
-            <select onChange={this.dropDown} defaultValue="Labels">
-              <option value="Labels" disabled>
-                &nbsp;&nbsp;Labels
-              </option>
-              {this.props.labels.map(label => (
-                <option>{label}</option>
-              ))}
-            </select>
-          </div>
           <div className="author-drop">
-            <select onChange={this.authorDown} defaultValue="Authors">
+            <select
+              id="authorDropDown"
+              onChange={this.authorDown}
+              defaultValue="Authors"
+            >
               <option value="Authors" disabled>
                 &nbsp;&nbsp;Authors
               </option>
@@ -106,7 +129,11 @@ export class HeaderContainer extends Component {
             </select>
           </div>
           <div className="sortDrop">
-            <select onChange={this.sortData} defaultValue="Sort">
+            <select
+              id="sortDropDown"
+              onChange={this.sortData}
+              defaultValue="Sort"
+            >
               <option value="Sort" disabled>
                 &nbsp;&nbsp;Sort
               </option>
@@ -115,6 +142,17 @@ export class HeaderContainer extends Component {
               <option>Recently Upadted</option>
               <option>Least Recently Updated</option>
             </select>
+          </div>
+          <div className="dropDown-list">
+            {/* <select id = 'labelDropDown' onChange={this.dropDown} defaultValue="Labels">
+              <option value="Labels" disabled>
+                &nbsp;&nbsp;Labels
+              </option>
+              {this.state.labels.map(label => (
+                <option>{label.name}</option>
+              ))}
+            </select> */}
+            <MultipleSelect labelsUi={this.state.labels} labelsDrop = {this.dropDown} />
           </div>
         </div>
       </div>

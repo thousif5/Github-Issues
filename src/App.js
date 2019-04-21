@@ -2,18 +2,20 @@ import React, { Component } from "react";
 import HeaderContainer from "./components/HeaderContainer";
 import IssuesContainer from "./components/IssuesContainer";
 import Pagination from "./components/Pagination";
-// import issues from "./issues.json";
 import moment from "moment";
 import "./App.css";
 
-let labelList = [];
+const repoData = {
+  owner : 'thousif7',
+  repo : 'test-issues'
+}
+let repoOwner = repoData.owner+'/'+repoData.repo;
 let authorList = [];
 class App extends Component {
   state = {
     open: "",
     close: "",
     data: null,
-    labelList: [],
     authorList: [],
     issuesData: [],
     page: 0
@@ -39,18 +41,13 @@ class App extends Component {
   };
 
   labelDropDown = e => {
-    let tempArray = this.state.data.filter(issue => {
-      let temp = false;
-      issue.labels.forEach(label => {
-        if (label.name === e.target.value) {
-          temp = true;
-        }
-      });
-      return temp;
-    });
+    fetch(`https://api.github.com/repos/${repoOwner}/issues?labels=${e}`)
+    .then(res => res.json())
+    .then(labelFiltered => 
     this.setState({
-      data: tempArray
-    });
+      data: labelFiltered
+    })
+    )
   };
 
   authorDropDown = e => {
@@ -96,7 +93,7 @@ class App extends Component {
 
   setData = value => {
     fetch(
-      `https://api.github.com/repos/thousif7/test-issues/issues`
+      `https://api.github.com/repos/${repoOwner}/issues?per_page=4`
     )
       .then(res => res.json())
       .then(issues =>
@@ -104,12 +101,6 @@ class App extends Component {
           data: issues,
           open: issues.filter(item => item.state === "open").length,
           close: issues.filter(item => item.state === "close").length,
-          labelList: issues.forEach(issue => {
-            issue.labels.forEach(label => {
-              if (!labelList.includes(label.name)) labelList.push(label.name);
-            });
-          }),
-
           authorList: issues.forEach(issue => {
             if (!authorList.includes(issue.user.login))
               authorList.push(issue.user.login);
@@ -127,9 +118,6 @@ class App extends Component {
   handlePage = e => {
     let page = e.selected +1;
     this.props.children[1].history.push("/page/" + page);
-    // this.setData(page);
-
-    // this.props.data.history.push("/page/" + e.selected+1)
   };
 
   render() {
@@ -155,12 +143,13 @@ class App extends Component {
       return (
         <div className="App">
           <HeaderContainer
+            repoData = {repoData}
+            repoOwner = {repoOwner}
             issuesHandler={this.issueData}
             closeStateHandler={this.closeStateHandler}
             openStateHandler={this.openStateHandler}
             openState={this.state.open}
             closeState={this.state.close}
-            labels={labelList}
             labelsHandler={this.labelDropDown}
             authors={authorList}
             authorsHandler={this.authorDropDown}
