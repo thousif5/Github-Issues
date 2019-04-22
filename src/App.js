@@ -12,7 +12,9 @@ const repoData = {
 let repoOwner = repoData.owner+'/'+repoData.repo;
 let authorList = [];
 class App extends Component {
-  state = {
+  constructor(props) {
+    super(props)
+  this.state = {
     open: "",
     close: "",
     data: null,
@@ -20,6 +22,8 @@ class App extends Component {
     issuesData: [],
     page: 0
   };
+ 
+}
 
   issueData = () => {
     this.setState({
@@ -41,7 +45,7 @@ class App extends Component {
   };
 
   labelDropDown = e => {
-    fetch(`https://api.github.com/repos/${repoOwner}/issues?labels=${e}`)
+    fetch(`https://api.github.com/repos/${repoOwner}/issues?labels=${e}&per_page=4`)
     .then(res => res.json())
     .then(labelFiltered => 
     this.setState({

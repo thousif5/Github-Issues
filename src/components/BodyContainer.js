@@ -16,12 +16,12 @@ export class BodyContainer extends Component {
 
   getData(id) {
     if (newToken !== null) {
-      fetch(`https://api.github.com/repos/${repoOwner}/issues/${id}`)
+      fetch(`https://api.github.com/repos/${repoOwner}/issues/${id}?access_token=${newToken}`)
         .then(res => res.json())
         .then(bodyData => {
           this.setState({
             data: bodyData
-          });
+          })
         });
     }
   }
@@ -29,7 +29,7 @@ export class BodyContainer extends Component {
   getComments(id) {
     if (newToken !== null) {
       fetch(
-        `https://api.github.com/repos/${repoOwner}/issues/${id}/comments`
+        `https://api.github.com/repos/${repoOwner}/issues/${id}/comments?access_token=${newToken}`
       )
         .then(res => res.json())
         .then(commentData => {

@@ -3,12 +3,14 @@ import { auth, signOut } from "./auth";
 import MultipleSelect from "./MultipleSelect";
 import "../App.css";
 
-let name = sessionStorage.getItem("name");
 export class HeaderContainer extends Component {
-  state = {
-    data: "sign in",
-    labels: []
-  };
+  constructor(props){
+    super(props)
+      this.state = {
+      labels: [],
+      signed: sessionStorage.getItem('signed')
+    };
+}
 
   getLabels = () => {
     fetch(`https://api.github.com/repos/${this.props.repoOwner}/labels`)
@@ -21,17 +23,19 @@ export class HeaderContainer extends Component {
   };
 
   importToken = () => {
-    if (this.state.data === "sign in") {
+    if (sessionStorage.length === 1) {
       auth();
+      // sessionStorage.setItem('status', true);
       this.setState({
-        data: "sign out"
-      });
+        signed: 'sign out'
+      })
     }
-    if (this.state.data === "sign out") {
+    else {
       signOut();
+      // sessionStorage.removeItem('status')
       this.setState({
-        data: "sign in"
-      });
+        signed: 'sign in'
+      })
     }
   };
 
@@ -90,9 +94,9 @@ export class HeaderContainer extends Component {
             type="text"
             placeholder="Search.."
           />
-          <p>{this.state.data === "sign out" ? name : null}</p>
           <button onClick={this.importToken} className="signIn">
-            {this.state.data}
+            {this.state.signed}
+            {/* {sessionStorage.getItem('data')  ? 'sign out' : 'sign in'} */}
           </button>
         </div>
         <div className="issues-border">
@@ -144,14 +148,6 @@ export class HeaderContainer extends Component {
             </select>
           </div>
           <div className="dropDown-list">
-            {/* <select id = 'labelDropDown' onChange={this.dropDown} defaultValue="Labels">
-              <option value="Labels" disabled>
-                &nbsp;&nbsp;Labels
-              </option>
-              {this.state.labels.map(label => (
-                <option>{label.name}</option>
-              ))}
-            </select> */}
             <MultipleSelect labelsUi={this.state.labels} labelsDrop = {this.dropDown} />
           </div>
         </div>
