@@ -8,7 +8,7 @@ export class HeaderContainer extends Component {
     super(props)
       this.state = {
       labels: [],
-      signed: sessionStorage.getItem('signed')
+      signed: localStorage.getItem('signed')
     };
 }
 
@@ -23,7 +23,7 @@ export class HeaderContainer extends Component {
   };
 
   importToken = () => {
-    if (sessionStorage.length === 1) {
+    if (sessionStorage.length === 0) {
       auth();
       // sessionStorage.setItem('status', true);
       this.setState({

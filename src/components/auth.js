@@ -28,7 +28,7 @@ const auth = () => {
       user = result.user;
       sessionStorage.setItem("data", token);
       sessionStorage.setItem("name", user.email);
-      sessionStorage.setItem("signed", 'sign out');
+      localStorage.setItem("signed", 'sign out');
       // ...
     })
     .catch(function(error) {
@@ -49,7 +49,7 @@ const signOut = () => {
     .signOut()
     .then(function() {
       // Sign-out successful.
-      sessionStorage.setItem('signed', 'sign in');
+      localStorage.setItem('signed', 'sign in');
       sessionStorage.removeItem('data');
       sessionStorage.removeItem('name');
     })
