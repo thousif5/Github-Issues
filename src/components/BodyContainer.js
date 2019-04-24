@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect  } from 'react-redux';
+import { getData, getComments, commentToAdd, deleteComment } from './../actions/CommentActions';
 import "./BodyContainer.css";
 import ReactMarkdown from "react-markdown";
 
@@ -7,82 +9,45 @@ const repoData = {
   repo : 'test-issues'
 }
 let repoOwner = repoData.owner+'/'+repoData.repo;
-let newToken = sessionStorage.getItem("data");
+// let newToken = sessionStorage.getItem("data");
 export class BodyContainer extends Component {
-  state = {
-    data: null,
-    comments: []
-  };
-
-  getData(id) {
-    if (newToken !== null) {
-      fetch(`https://api.github.com/repos/${repoOwner}/issues/${id}?access_token=${newToken}`)
-        .then(res => res.json())
-        .then(bodyData => {
-          this.setState({
-            data: bodyData
-          })
-        });
-    }
-  }
-
-  getComments(id) {
-    if (newToken !== null) {
-      fetch(
-        `https://api.github.com/repos/${repoOwner}/issues/${id}/comments?access_token=${newToken}`
-      )
-        .then(res => res.json())
-        .then(commentData => {
-          this.setState({
-            comments: commentData
-          });
-        });
-    }
-  }
-
   addComment = e => {
-    if (newToken !== null && e.key === "Enter") {
-      fetch(
-        `https://api.github.com/repos/${repoOwner}/issues/${
-          this.state.data.number
-        }/comments?access_token=${newToken}`,
-        { method: "POST", body: JSON.stringify({ body: e.target.value }) }
-      )
-        .then(commentData => commentData.json())
-        .then(addedComments => {
-          let tempArray = this.state.comments;
-          tempArray.push(addedComments);
-          this.setState({
-            comments: tempArray
-          });
-        });
-      e.target.value = "";
-    }
+    this.props.commentToAdd(e, this.props.data.number, this.props.comments);
   };
+  state=[];
 
   deleteComment = e => {
-    if (newToken !== null) {
-      fetch(
-        `https://api.github.com/repos/${repoOwner}/issues/comments/${
-          e.target.id
-        }?access_token=${newToken}`,
-        { method: "DELETE" }
-      ).catch(err => console.log(err));
-      let update = this.state.comments.filter(
-        ele => parseInt(ele.id) !== parseInt(e.target.id)
-      );
-      this.setState({ comments: update });
-    }
+    this.props.deleteComment(e, this.props.comments)
+    // if (newToken !== null) {
+    //   fetch(
+    //     `https://api.github.com/repos/${repoOwner}/issues/comments/${
+    //       e.target.id
+    //     }?access_token=${newToken}`,
+    //     { method: "DELETE" }
+    //   ).catch(err => console.log(err));
+    //   let update = this.state.comments.filter(
+    //     ele => parseInt(ele.id) !== parseInt(e.target.id)
+    //   );
+    //   this.setState({ comments: update });
+    // }
   };
 
   componentDidMount() {
-    this.getData(this.props.match.params.id);
-    this.getComments(this.props.match.params.id);
+    this.props.getData(this.props.match.params.id);
+    this.props.getComments(this.props.match.params.id);
   }
 
+  componentDidUpdate(props){
+    console.log("updated")
+  }
+  getDerivedStateFromProps(props){
+    console.log("derieve")
+  }
+  
   render() {
+    console.log(this.props,"bodydd")
     let homeUrl = "http://localhost:3000";
-    if (this.state.data === null) {
+    if (this.props.data === null) {
       return (
         <div className="loading">
           <h1>Be patient, We're working on it</h1>
@@ -121,22 +86,22 @@ export class BodyContainer extends Component {
           </div>
           <div className="body-data">
             <div className="body-title">
-              <h2>{this.state.data.title}</h2>
+              <h2>{this.props.data.title}</h2>
             </div>
             <div className="dp-title">
               <div className="dp-img">
-                <img src={this.state.data.user.avatar_url} alt="" />
+                <img src={this.props.data.user.avatar_url} alt="" />
               </div>
               <div className="issue-body-comments">
                 <div>
                   <ReactMarkdown skipHtml={true}>
-                    {this.state.data.body}
+                    {this.props.data.body}
                   </ReactMarkdown>
                 </div>
                 <div>
                   <h3>Comments:</h3>
                 </div>
-                {this.state.comments.map(comment => (
+                {this.props.comments.map(comment => (
                   <div className="comments-to-populate">
                     <div className="avatar-user">
                       <img src={comment.user.avatar_url} alt="" />
@@ -179,4 +144,12 @@ export class BodyContainer extends Component {
   }
 }
 
-export default BodyContainer;
+const mapStateToProps = (state) => {
+  console.log(state," inside maps")
+  return ({
+    data: state.comments.data,
+    comments: state.comments.comments
+  })
+}
+
+export default connect(mapStateToProps,{getData, getComments, commentToAdd, deleteComment})(BodyContainer);

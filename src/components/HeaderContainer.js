@@ -52,11 +52,11 @@ export class HeaderContainer extends Component {
   };
 
   openButton = () => {
-    this.props.openStateHandler("open");
+    this.props.openStateHandler();
   };
 
   closeButton = () => {
-    this.props.closeStateHandler("close");
+    this.props.closeStateHandler();
   };
 
   dropDown = e => {
@@ -64,7 +64,7 @@ export class HeaderContainer extends Component {
   };
 
   authorDown = e => {
-    this.props.authorsHandler(e);
+    this.props.authorsHandler(e.target.value);
   };
 
   sortData = e => {

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import HeaderContainer from "./components/HeaderContainer";
 import IssuesContainer from "./components/IssuesContainer";
+import { connect  } from 'react-redux';
+import { getData, doSort, setStatus, getLabelsFiltered, getAuthorsFiltered, searchData } from './actions/IssueActions';
 import Pagination from "./components/Pagination";
 import moment from "moment";
 import "./App.css";
@@ -12,112 +14,82 @@ const repoData = {
 let repoOwner = repoData.owner+'/'+repoData.repo;
 let authorList = [];
 class App extends Component {
-  constructor(props) {
-    super(props)
-  this.state = {
-    open: "",
-    close: "",
-    data: null,
-    authorList: [],
-    issuesData: [],
-    page: 0
-  };
- 
-}
-
   issueData = () => {
-    this.setState({
-      data: this.state.issuesData
-    });
+    this.props.getData(this.props.page);
   };
 
   // set status
-  openStateHandler = status => {
-    this.setState({
-      data: this.state.issuesData.filter(issue => issue.state === status)
-    });
+  openStateHandler = () => {
+    this.props.setStatus('open');
   };
 
-  closeStateHandler = status => {
-    this.setState({
-      data: this.state.data.filter(issue => issue.state === status)
-    });
+  closeStateHandler = () => {
+    this.props.setStatus('closed')
   };
 
   labelDropDown = e => {
-    fetch(`https://api.github.com/repos/${repoOwner}/issues?labels=${e}&per_page=4`)
-    .then(res => res.json())
-    .then(labelFiltered => 
-    this.setState({
-      data: labelFiltered
-    })
-    )
+    this.props.getLabelsFiltered(e)
   };
 
   authorDropDown = e => {
-    this.setState({
-      data: this.state.data.filter(issue => issue.user.login === e.target.value)
-    });
+    this.props.getAuthorsFiltered(e)
   };
 
-  sortHandler = e => {
+  sortHandler = (e) => {
     let sortedData = [];
+    const newData = [...this.props.data]
     if (e.target.value === "Oldest") {
-      sortedData = this.state.data.sort((a, b) => {
+      sortedData = newData.sort((a, b) => {
         return moment(a.created_at) - moment(b.created_at);
       });
     } else if (e.target.value === "Newest") {
-      sortedData = this.state.data.sort((a, b) => {
+      sortedData = newData.sort((a, b) => {
         return moment(b.created_at) - moment(a.created_at);
       });
     } else if (e.target.value === "Recently Upadted") {
-      sortedData = this.state.data.sort((a, b) => {
+      sortedData = newData.sort((a, b) => {
         return moment(b.updated_at) - moment(a.updated_at);
       });
     } else if (e.target.value === "Least Recently Updated") {
-      sortedData = this.state.data.sort((a, b) => {
+      sortedData = newData.sort((a, b) => {
         return moment(a.updated_at) - moment(b.updated_at);
       });
     }
 
-    this.setState({
-      data: sortedData
-    });
+    this.props.doSort(sortedData);
   };
 
   searchHandler = e => {
     if (e.key === "Enter") {
-      this.setState({
-        data: this.state.data.filter(
-          issue => issue.title.toLowerCase().indexOf(e.target.value) !== -1
-        )
-      });
+      this.props.searchData(e.target.value, this.props.data);
     }
   };
 
-  setData = value => {
-    fetch(
-      `https://api.github.com/repos/${repoOwner}/issues?per_page=4`
-    )
-      .then(res => res.json())
-      .then(issues =>
-        this.setState({
-          data: issues,
-          open: issues.filter(item => item.state === "open").length,
-          close: issues.filter(item => item.state === "close").length,
-          authorList: issues.forEach(issue => {
-            if (!authorList.includes(issue.user.login))
-              authorList.push(issue.user.login);
-          }),
-          issuesData: issues
-        
-        })
-      );
-  };
-
   componentDidMount() {
-    this.setData(1);
+    this.props.getData(1)
+    // this.setState(
+    //   {
+    //     page: this.props.children[1].match.params.pageNo
+    //   },
+    //   () => {
+    //     this.setData(this.props.children[1].match.params.pageNo);
+    //   }
+    // );
   }
+
+  componentDidUpdate(props) {
+    if (this.props !== props) {
+      // this.setState(
+      //   {
+      //     page: this.props.children[1].match.params.pageNo
+      //   },
+      //   () => {
+      //     this.setData(this.props.children[1].match.params.pageNo);
+      //   }
+      // );
+    }
+  }
+
 
   handlePage = e => {
     let page = e.selected +1;
@@ -125,7 +97,7 @@ class App extends Component {
   };
 
   render() {
-    if (this.state.data === null) {
+    if (this.props.data === null) {
       return (
         // loading animation css
         <div className="loading">
@@ -152,8 +124,8 @@ class App extends Component {
             issuesHandler={this.issueData}
             closeStateHandler={this.closeStateHandler}
             openStateHandler={this.openStateHandler}
-            openState={this.state.open}
-            closeState={this.state.close}
+            openState={this.props.open}
+            closeState={this.props.close}
             labelsHandler={this.labelDropDown}
             authors={authorList}
             authorsHandler={this.authorDropDown}
@@ -161,14 +133,30 @@ class App extends Component {
             searchData={this.searchHandler}
           />
           <div className="issues-data">
-            {this.state.data.map(item => (
+            {this.props.data.map(item => (
               <IssuesContainer value={item} />
             ))}
           </div>
-          <Pagination handlePage={this.handlePage} page = {this.state.page} />
+          <Pagination handlePage={this.handlePage} page = {this.props.page} />
         </div>
       );
     }
   }
 }
-export default App;
+
+const mapStateToProps = (state) => {
+  return ({
+    data: state.issues.data,
+    page: state.issues.page,
+    open: state.issues.open,
+    close: state.issues.close,
+    authorList: state.issues.authorList.forEach(issue => {
+      if(!authorList.includes(issue.user.login)) {
+        authorList.push(issue.user.login)
+      }
+    }),
+    issuesData: state.issues.data
+  })
+}
+
+export default connect(mapStateToProps,{getData, doSort, setStatus, getLabelsFiltered, getAuthorsFiltered, searchData})(App);
