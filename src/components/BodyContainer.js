@@ -1,23 +1,28 @@
 import React, { Component } from "react";
-import { connect  } from 'react-redux';
-import { getData, getComments, commentToAdd, deleteComment } from './../actions/CommentActions';
+import { connect } from "react-redux";
+import {
+  getData,
+  getComments,
+  commentToAdd,
+  deleteComment
+} from "./../actions/CommentActions";
 import "./BodyContainer.css";
 import ReactMarkdown from "react-markdown";
 
 const repoData = {
-  owner : 'thousif7',
-  repo : 'test-issues'
-}
-let repoOwner = repoData.owner+'/'+repoData.repo;
+  owner: "thousif7",
+  repo: "test-issues"
+};
+let repoOwner = repoData.owner + "/" + repoData.repo;
 // let newToken = sessionStorage.getItem("data");
 export class BodyContainer extends Component {
   addComment = e => {
     this.props.commentToAdd(e, this.props.data.number, this.props.comments);
   };
-  state=[];
+  state = [];
 
   deleteComment = e => {
-    this.props.deleteComment(e, this.props.comments)
+    this.props.deleteComment(e, this.props.comments);
     // if (newToken !== null) {
     //   fetch(
     //     `https://api.github.com/repos/${repoOwner}/issues/comments/${
@@ -37,15 +42,44 @@ export class BodyContainer extends Component {
     this.props.getComments(this.props.match.params.id);
   }
 
-  componentDidUpdate(props){
-    console.log("updated")
+  componentDidUpdate(props) {
+    console.log("updated");
   }
-  getDerivedStateFromProps(props){
-    console.log("derieve")
+  getDerivedStateFromProps(props) {
+    console.log("derieve");
   }
-  
+
+  verificationAdd = () => {
+    if (sessionStorage.getItem("data")) {
+      return (
+        <div className="comment-username">
+          <div>
+            <h5>thousif7:</h5>
+          </div>
+          <div className="add-comments">
+            <input
+              onKeyPress={this.addComment}
+              type="text"
+              placeholder=" Add Comments"
+            />
+          </div>
+        </div>
+      );
+    }
+  };
+
+  verificationDel = id => {
+    if (sessionStorage.getItem("data")) {
+      return (
+        <button id={id} onClick={this.deleteComment} className="delete-button">
+          Delete
+        </button>
+      );
+    }
+  };
+
   render() {
-    console.log(this.props,"bodydd")
+    console.log(this.props, "bodydd");
     let homeUrl = "http://localhost:3000";
     if (this.props.data === null) {
       return (
@@ -113,28 +147,18 @@ export class BodyContainer extends Component {
                     </div>
                     <div className="comment-user">
                       <p>{comment.body}</p>
-                      <button
+                      {this.verificationDel(comment.id)}
+                      {/* <button
                         id={comment.id}
                         onClick={this.deleteComment}
                         className="delete-button"
                       >
                         Delete
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 ))}
-                <div className = 'comment-username'>
-                <div>
-                  <h5>thousif7:</h5>
-                </div>
-                <div className="add-comments">
-                  <input
-                    onKeyPress={this.addComment}
-                    type="text"
-                    placeholder=" Add Comments"
-                  />
-                </div>
-                </div>
+                {this.verificationAdd()}
               </div>
             </div>
           </div>
@@ -144,12 +168,15 @@ export class BodyContainer extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  console.log(state," inside maps")
-  return ({
+const mapStateToProps = state => {
+  console.log(state, " inside maps");
+  return {
     data: state.comments.data,
     comments: state.comments.comments
-  })
-}
+  };
+};
 
-export default connect(mapStateToProps,{getData, getComments, commentToAdd, deleteComment})(BodyContainer);
+export default connect(
+  mapStateToProps,
+  { getData, getComments, commentToAdd, deleteComment }
+)(BodyContainer);

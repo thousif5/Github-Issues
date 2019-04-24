@@ -4,5 +4,5 @@ import CommentsReducer from './CommentsReducer';
 
 export default combineReducers({
   issues: IssuesReducer,
-  comments: CommentsReducer
+  comments: CommentsReducer,
 })

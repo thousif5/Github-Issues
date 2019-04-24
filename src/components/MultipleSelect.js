@@ -1,14 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles';
+import { connect  } from 'react-redux';
+import { handleChange, getLabelsData } from './../actions/IssueActions'
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-let repoOwner = 'thousif7/test-issues'
-getLabels();
+let repoOwner = 'thousif7/test-issues';
 var labs = [];
 
 const styles = theme => ({
@@ -47,65 +48,40 @@ const MenuProps = {
   },
 };
 
-function getLabels () {
-    fetch(`https://api.github.com/repos/${repoOwner}/labels`)
-    .then(res => res.json())
-    .then(data => {
-      labs = data;
-      labs.map(lab => names.push(lab.name));
-    });
-}
-
-const names = [];
-
-function getStyles(name, that) {
-  return {
-    fontWeight:
-      that.state.name.indexOf(name) === -1
-        ? that.props.theme.typography.fontWeightRegular
-        : that.props.theme.typography.fontWeightMedium,
-  };
-}
-
+let names = [];
 class MultipleSelect extends React.Component {
-  state = {
-    name: [],
-  };
+  componentDidMount() {
+    console.log('hi')
+    this.props.getLabelsData()
+  }
 
-  handleChange = event => {
-    this.props.labelsDrop(event.target.value.join())
-    this.setState({ name: event.target.value });
-  };
-
-  handleChangeMultiple = event => {
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    this.setState({
-      name: value,
-    });
-  };
+  // handleChange = event => {
+  //   this.props.getLabelsFiltered(event.target.value.join(), event.target.value)
+  //   // this.setState({ name: event.target.value });
+  // };
 
   render() {
+    console.log(this.props)
     const { classes } = this.props;
-
     return (
       <div className={classes.root}>
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="select-multiple">Labels</InputLabel>
           <Select
             multiple
-            value={this.state.name}
-            onChange={this.handleChange}
+            value={this.props.name}
+            onChange={this.props.handleChange}
             input={<Input id="select-multiple" />}
             MenuProps={MenuProps}
           >
+          {
+            names = this.props.labels.reduce((acc, val) => {
+              acc.push(val.name)
+              return acc;
+            }, [])
+          }
             {names.map(name => (
-              <MenuItem key={name} value={name} style={getStyles(name, this)}>
+              <MenuItem key={name} value={name} >
                 {name}
               </MenuItem>
             ))}
@@ -118,6 +94,15 @@ class MultipleSelect extends React.Component {
 
 MultipleSelect.propTypes = {
   classes: PropTypes.object.isRequired,
-};
+}
 
-export default withStyles(styles, { withTheme: true })(MultipleSelect);
+const mapStateToProps = state => {
+  if(state!== undefined) {
+  return { 
+    name: state.issues.name,
+    labels: state.issues.labels
+  }
+}
+}
+
+export default connect(mapStateToProps, { handleChange, getLabelsData })(withStyles(styles, { withTheme: true })(MultipleSelect));

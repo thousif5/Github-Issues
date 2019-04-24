@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import HeaderContainer from "./components/HeaderContainer";
 import IssuesContainer from "./components/IssuesContainer";
 import { connect  } from 'react-redux';
-import { getData, doSort, setStatus, getLabelsFiltered, getAuthorsFiltered, searchData } from './actions/IssueActions';
+import { getData, doSort, setStatus, getAuthorsFiltered, searchData } from './actions/IssueActions';
 import Pagination from "./components/Pagination";
 import moment from "moment";
 import "./App.css";
@@ -25,10 +25,6 @@ class App extends Component {
 
   closeStateHandler = () => {
     this.props.setStatus('closed')
-  };
-
-  labelDropDown = e => {
-    this.props.getLabelsFiltered(e)
   };
 
   authorDropDown = e => {
@@ -67,33 +63,12 @@ class App extends Component {
 
   componentDidMount() {
     this.props.getData(1)
-    // this.setState(
-    //   {
-    //     page: this.props.children[1].match.params.pageNo
-    //   },
-    //   () => {
-    //     this.setData(this.props.children[1].match.params.pageNo);
-    //   }
-    // );
   }
-
-  componentDidUpdate(props) {
-    if (this.props !== props) {
-      // this.setState(
-      //   {
-      //     page: this.props.children[1].match.params.pageNo
-      //   },
-      //   () => {
-      //     this.setData(this.props.children[1].match.params.pageNo);
-      //   }
-      // );
-    }
-  }
-
 
   handlePage = e => {
     let page = e.selected +1;
     this.props.children[1].history.push("/page/" + page);
+    this.props.getData(page)
   };
 
   render() {
@@ -126,7 +101,6 @@ class App extends Component {
             openStateHandler={this.openStateHandler}
             openState={this.props.open}
             closeState={this.props.close}
-            labelsHandler={this.labelDropDown}
             authors={authorList}
             authorsHandler={this.authorDropDown}
             dataToSort={this.sortHandler}
@@ -137,7 +111,7 @@ class App extends Component {
               <IssuesContainer value={item} />
             ))}
           </div>
-          <Pagination handlePage={this.handlePage} page = {this.props.page} />
+          <Pagination handlePage={this.handlePage} page = {parseInt(this.props.children[1].match.params.pageNo)-1} />
         </div>
       );
     }
@@ -145,6 +119,7 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state.issues)
   return ({
     data: state.issues.data,
     page: state.issues.page,
@@ -159,4 +134,4 @@ const mapStateToProps = (state) => {
   })
 }
 
-export default connect(mapStateToProps,{getData, doSort, setStatus, getLabelsFiltered, getAuthorsFiltered, searchData})(App);
+export default connect(mapStateToProps,{getData, doSort, setStatus, getAuthorsFiltered, searchData})(App);

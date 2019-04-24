@@ -7,27 +7,27 @@ let repoOwner = repoData.owner+'/'+repoData.repo;
 let newToken = sessionStorage.getItem("data");
 
 export const getData = id => dispatch => {
-  if(newToken!== null) {
-    fetch(`https://api.github.com/repos/${repoOwner}/issues/${id}?access_token=${newToken}`)
+  // if(newToken!== null) {
+    fetch(`https://api.github.com/repos/${repoOwner}/issues/${id}`)
     .then(res => res.json())
     .then(bodyData => dispatch({
       type: 'GET_COMMENTS_DATA',
       payload: {bodyData}
     }))
-  }
+  // }
 }
 
 export const getComments = id => dispatch => {
-  if (newToken !== null) {
+  // if (newToken !== null) {
     fetch(
-      `https://api.github.com/repos/${repoOwner}/issues/${id}/comments?access_token=${newToken}`
+      `https://api.github.com/repos/${repoOwner}/issues/${id}/comments`
     )
     .then(res => res.json())
     .then(commentsData => dispatch({
       type: 'GET_COMMENTS',
       payload: {commentsData}
     }))
-  }
+  // }
 }
 
 export const commentToAdd = (e, value, array) => dispatch => {

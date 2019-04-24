@@ -2,40 +2,17 @@ import React, { Component } from "react";
 import { auth, signOut } from "./auth";
 import MultipleSelect from "./MultipleSelect";
 import "../App.css";
+import { loginCheck } from "../actions/IssueActions";
+import { connect } from "react-redux";
 
 export class HeaderContainer extends Component {
-  constructor(props){
-    super(props)
-      this.state = {
-      labels: [],
-      signed: localStorage.getItem('signed')
-    };
-}
-
-  getLabels = () => {
-    fetch(`https://api.github.com/repos/${this.props.repoOwner}/labels`)
-      .then(res => res.json())
-      .then(labelsData =>
-        this.setState({
-          labels: labelsData
-        })
-      );
-  };
-
   importToken = () => {
     if (sessionStorage.length === 0) {
       auth();
-      // sessionStorage.setItem('status', true);
-      this.setState({
-        signed: 'sign out'
-      })
-    }
-    else {
+      this.props.loginCheck();
+    } else {
       signOut();
-      // sessionStorage.removeItem('status')
-      this.setState({
-        signed: 'sign in'
-      })
+      this.props.loginCheck();
     }
   };
 
@@ -59,10 +36,6 @@ export class HeaderContainer extends Component {
     this.props.closeStateHandler();
   };
 
-  dropDown = e => {
-    this.props.labelsHandler(e);
-  };
-
   authorDown = e => {
     this.props.authorsHandler(e.target.value);
   };
@@ -74,10 +47,6 @@ export class HeaderContainer extends Component {
   searchInput = e => {
     this.props.searchData(e);
   };
-
-  componentDidMount() {
-    this.getLabels();
-  }
 
   render() {
     let homeUrl = "http://localhost:3000";
@@ -95,8 +64,7 @@ export class HeaderContainer extends Component {
             placeholder="Search.."
           />
           <button onClick={this.importToken} className="signIn">
-            {this.state.signed}
-            {/* {sessionStorage.getItem('data')  ? 'sign out' : 'sign in'} */}
+            {this.props.signed}
           </button>
         </div>
         <div className="issues-border">
@@ -148,7 +116,7 @@ export class HeaderContainer extends Component {
             </select>
           </div>
           <div className="dropDown-list">
-            <MultipleSelect labelsUi={this.state.labels} labelsDrop = {this.dropDown} />
+            <MultipleSelect />
           </div>
         </div>
       </div>
@@ -156,4 +124,13 @@ export class HeaderContainer extends Component {
   }
 }
 
-export default HeaderContainer;
+const mapStateToProps = state => {
+  return {
+    signed: state.issues.signed
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  { loginCheck }
+)(HeaderContainer);
