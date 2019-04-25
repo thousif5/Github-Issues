@@ -7,18 +7,16 @@ let repoOwner = repoData.owner+'/'+repoData.repo;
 let newToken = sessionStorage.getItem("data");
 
 export const getData = id => dispatch => {
-  // if(newToken!== null) {
     fetch(`https://api.github.com/repos/${repoOwner}/issues/${id}`)
     .then(res => res.json())
     .then(bodyData => dispatch({
       type: 'GET_COMMENTS_DATA',
       payload: {bodyData}
     }))
-  // }
+    .catch(err => console.log(err))
 }
 
 export const getComments = id => dispatch => {
-  // if (newToken !== null) {
     fetch(
       `https://api.github.com/repos/${repoOwner}/issues/${id}/comments`
     )
@@ -27,7 +25,7 @@ export const getComments = id => dispatch => {
       type: 'GET_COMMENTS',
       payload: {commentsData}
     }))
-  // }
+    .catch(err => console.log(err))
 }
 
 export const commentToAdd = (e, value, array) => dispatch => {
@@ -37,13 +35,13 @@ export const commentToAdd = (e, value, array) => dispatch => {
     .then(addedComments => {
       let tempArray = [...array];
           tempArray.push(addedComments);
-          console.log(tempArray);
           dispatch({
             type: 'ADD_COMMENTS',
             payload: tempArray
           })
           
-    });
+    })
+    .catch(err => console.log(err))
     e.target.value = "";
   }
 }
@@ -55,14 +53,10 @@ export const deleteComment = (e, array) => dispatch => {
         e.target.id
       }?access_token=${newToken}`,
       { method: "DELETE" }
-    ).catch(err => console.log(err));
-      let temp = [...array]
-    let update = temp.filter(
-      ele => parseInt(ele.id) !== parseInt(e.target.id)
-    );
+    )
       dispatch({
         type: 'DELETE_COMMENTS',
-        payload: update
+        payload: {array, e}
       })
   }
 }

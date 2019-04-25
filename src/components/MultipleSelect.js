@@ -1,39 +1,36 @@
-import React from 'react';
-import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles';
-import { connect  } from 'react-redux';
-import { handleChange, getLabelsData } from './../actions/IssueActions'
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-
-let repoOwner = 'thousif7/test-issues';
-var labs = [];
+import React from "react";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+import { handleChange, getLabelsData } from "./../actions/IssueActions";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 
 const styles = theme => ({
   root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    backgroundColor: 'white',
+    display: "flex",
+    flexWrap: "wrap",
+    backgroundColor: "white"
   },
 
   formControl: {
-    borderTop: 'solid 3px orange',
+    borderTop: "solid 3px orange",
     minWidth: 120,
-    maxWidth: 300,
+    maxWidth: 300
   },
   chips: {
-    display: 'flex',
-    flexWrap: 'wrap',
+    display: "flex",
+    flexWrap: "wrap"
   },
   chip: {
-    margin: theme.spacing.unit / 4,
+    margin: theme.spacing.unit / 4
   },
   noLabel: {
-    marginTop: theme.spacing.unit * 3,
-  },
+    marginTop: theme.spacing.unit * 3
+  }
 });
 
 const ITEM_HEIGHT = 48;
@@ -43,25 +40,18 @@ const MenuProps = {
     style: {
       maxHeight: ITEM_HEIGHT * 9 + ITEM_PADDING_TOP,
       minHeight: ITEM_HEIGHT * 4 + ITEM_PADDING_TOP,
-      width: '85',
-    },
-  },
+      width: "85"
+    }
+  }
 };
 
 let names = [];
 class MultipleSelect extends React.Component {
   componentDidMount() {
-    console.log('hi')
-    this.props.getLabelsData()
+    this.props.getLabelsData();
   }
 
-  // handleChange = event => {
-  //   this.props.getLabelsFiltered(event.target.value.join(), event.target.value)
-  //   // this.setState({ name: event.target.value });
-  // };
-
   render() {
-    console.log(this.props)
     const { classes } = this.props;
     return (
       <div className={classes.root}>
@@ -74,14 +64,14 @@ class MultipleSelect extends React.Component {
             input={<Input id="select-multiple" />}
             MenuProps={MenuProps}
           >
-          {
-            names = this.props.labels.reduce((acc, val) => {
-              acc.push(val.name)
-              return acc;
-            }, [])
-          }
+            {
+              (names = this.props.labels.reduce((acc, val) => {
+                acc.push(val.name);
+                return acc;
+              }, []))
+            }
             {names.map(name => (
-              <MenuItem key={name} value={name} >
+              <MenuItem key={name} value={name}>
                 {name}
               </MenuItem>
             ))}
@@ -93,16 +83,19 @@ class MultipleSelect extends React.Component {
 }
 
 MultipleSelect.propTypes = {
-  classes: PropTypes.object.isRequired,
-}
+  classes: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => {
-  if(state!== undefined) {
-  return { 
-    name: state.issues.name,
-    labels: state.issues.labels
+  if (state !== undefined) {
+    return {
+      name: state.issues.name,
+      labels: state.issues.labels
+    };
   }
-}
-}
+};
 
-export default connect(mapStateToProps, { handleChange, getLabelsData })(withStyles(styles, { withTheme: true })(MultipleSelect));
+export default connect(
+  mapStateToProps,
+  { handleChange, getLabelsData }
+)(withStyles(styles, { withTheme: true })(MultipleSelect));

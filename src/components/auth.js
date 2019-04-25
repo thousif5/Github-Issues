@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 const firebase = require("firebase");
 
 let token = "";
@@ -22,40 +22,36 @@ const auth = () => {
     .auth()
     .signInWithPopup(provider)
     .then(function(result) {
-      // This gives you a GitHub Access Token. You can use it to access the GitHub API.
       token = result.credential.accessToken;
-      // The signed-in user info.
       user = result.user;
       sessionStorage.setItem("data", token);
       sessionStorage.setItem("name", user.email);
-      localStorage.setItem("signed", 'sign out');
-      // ...
+      sessionStorage.setItem("signed", "sign out");
     })
     .catch(function(error) {
+      console.log(error);
       // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
+      // var errorCode = error.code;
+      // var errorMessage = error.message;
       // The email of the user's account used.
-      var email = error.email;
+      // var email = error.email;
       // The firebase.auth.AuthCredent.catch(err => console.log(err)).catch(err => console.log(err))ial type that was used.
-      var credential = error.credential;
+      // var credential = error.credential;
       // ...
     });
-}
+};
 
 const signOut = () => {
   firebase
     .auth()
     .signOut()
     .then(function() {
-      // Sign-out successful.
-      localStorage.setItem('signed', 'sign in');
-      sessionStorage.removeItem('data');
-      sessionStorage.removeItem('name');
+      sessionStorage.setItem("signed", "sign in");
+      sessionStorage.removeItem("data");
+      sessionStorage.removeItem("name");
     })
     .catch(function(error) {
-      // An error happened.
-      console.log(error)
+      console.log(error);
     });
 };
 

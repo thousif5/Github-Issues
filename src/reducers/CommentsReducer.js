@@ -12,7 +12,6 @@ const CommentsReducer = (state = initialState, action) => {
   }
 
   if(action.type === "GET_COMMENTS") {
-    console.log(action.payload)
     return {
       ...state,
       comments: action.payload.commentsData
@@ -27,9 +26,13 @@ const CommentsReducer = (state = initialState, action) => {
   }
 
   if(action.type === "DELETE_COMMENTS") {
+    let temp = action.payload.array
+    let update = temp.filter(
+      ele => parseInt(ele.id) !== parseInt(action.payload.e.target.id)
+    );
     return {
       ...state,
-      comments: action.payload
+      comments: update
     }
   }
 

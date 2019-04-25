@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 
 export class HeaderContainer extends Component {
   importToken = () => {
-    if (sessionStorage.length === 0) {
+    if (sessionStorage.length === 1) {
       auth();
       this.props.loginCheck();
     } else {
@@ -28,13 +28,11 @@ export class HeaderContainer extends Component {
     this.allIssues();
   };
 
-  openButton = () => {
-    this.props.openStateHandler();
-  };
-
-  closeButton = () => {
-    this.props.closeStateHandler();
-  };
+  statusButton = (e) => {
+    let status = '';
+    e.target.id === 'open' ? status = 'open' : status = 'closed';
+    this.props.openStateHandler(status);
+  }
 
   authorDown = e => {
     this.props.authorsHandler(e.target.value);
@@ -77,12 +75,12 @@ export class HeaderContainer extends Component {
             </a>
           </div>
           <div>
-            <button onClick={this.openButton}>
+            <button id = 'open' onClick={this.statusButton}>
               open {this.props.openState}
             </button>
           </div>
           <div>
-            <button onClick={this.closeButton}>
+            <button id = 'closed' onClick={this.statusButton}>
               closed {this.props.closeState}
             </button>
           </div>

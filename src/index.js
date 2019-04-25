@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 import reducer from "./reducers/Combine";
@@ -18,7 +18,7 @@ const pageCont = dat => {
   return <App>data={dat}</App>;
 };
 // const initialState = {};
-const store = createStore(reducer, applyMiddleware(thunk));
+const store = createStore(reducer, compose (applyMiddleware(thunk),window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));
 
 const routing = (
   <Provider store = {store}>

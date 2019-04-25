@@ -6,7 +6,7 @@ const initialState = {
   close: "",
   authorList: [],
   page: 1,
-  signed: localStorage.getItem('signed')
+  signed: sessionStorage.getItem("signed")
 };
 
 const IssueReducer = (state = initialState, action) => {
@@ -22,16 +22,16 @@ const IssueReducer = (state = initialState, action) => {
     };
   }
 
-  if(action.type === "LOGIN") {
-    let status = '';
-    state.signed === 'sign in' ? status = 'sign out' : status = 'sign in';
+  if (action.type === "LOGIN") {
+    let status = "";
+    state.signed === "sign in" ? (status = "sign out") : (status = "sign in");
     return {
       ...state,
       signed: status
-    }
+    };
   }
 
-  if (action.type === "OPEN_OR_CLOSE_DATA") {
+  if (action.type === "STATUS_UPDATE") {
     return {
       ...state,
       data: action.payload.issues,
@@ -49,22 +49,20 @@ const IssueReducer = (state = initialState, action) => {
     };
   }
 
-  if(action.type === "GET_LABELS") {
-    console.log(action.payload)
+  if (action.type === "GET_LABELS") {
     return {
       ...state,
       labels: action.payload
-    }
+    };
   }
 
   if (action.type === "AUTHORS_FILTER") {
-    console.log(action.payload.e)
+    let newData = action.payload.issues.filter(
+      issue => issue.user.login === action.payload.e
+    );
     return {
       ...state,
-      data: action.payload.issues.filter(
-        issue => issue.user.login === action.payload.e
-      ),
-      
+      data: newData.filter(issue => issue.user.login === action.payload.e)
     };
   }
 
