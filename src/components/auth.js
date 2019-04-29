@@ -2,7 +2,6 @@
 const firebase = require("firebase");
 
 let token = "";
-let user = "";
 
 var config = {
   apiKey: "AIzaSyAvseDYqXG0taM58YAg0VbbFGY2RVZ5XlA",
@@ -22,10 +21,10 @@ const auth = () => {
     .auth()
     .signInWithPopup(provider)
     .then(function(result) {
+      console.log(result);
       token = result.credential.accessToken;
-      user = result.user;
       sessionStorage.setItem("data", token);
-      sessionStorage.setItem("name", user.email);
+      sessionStorage.setItem("name", result.additionalUserInfo.username);
       sessionStorage.setItem("signed", "sign out");
     })
     .catch(function(error) {

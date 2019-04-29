@@ -13,7 +13,7 @@ export const getData = id => dispatch => {
       type: 'GET_COMMENTS_DATA',
       payload: {bodyData}
     }))
-    .catch(err => console.log(err))
+    .catch(err => alert('unable to fetch', err.message))
 }
 
 export const getComments = id => dispatch => {
@@ -25,7 +25,7 @@ export const getComments = id => dispatch => {
       type: 'GET_COMMENTS',
       payload: {commentsData}
     }))
-    .catch(err => console.log(err))
+    .catch(err => alert('unable to fetch', err.message))
 }
 
 export const commentToAdd = (e, value, array) => dispatch => {
@@ -41,7 +41,7 @@ export const commentToAdd = (e, value, array) => dispatch => {
           })
           
     })
-    .catch(err => console.log(err))
+    .catch(err => alert('unable to post', err.message))
     e.target.value = "";
   }
 }
@@ -53,7 +53,7 @@ export const deleteComment = (e, array) => dispatch => {
         e.target.id
       }?access_token=${newToken}`,
       { method: "DELETE" }
-    )
+    ).catch(err => alert('unable to delete', err.message))
       dispatch({
         type: 'DELETE_COMMENTS',
         payload: {array, e}

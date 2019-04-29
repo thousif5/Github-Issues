@@ -6,6 +6,19 @@ import { loginCheck } from "../actions/IssueActions";
 import { connect } from "react-redux";
 
 export class HeaderContainer extends Component {
+
+  filterData = (e) => {
+    let obj = {
+      state: '',
+      authors: '',
+      label: '',
+      search: '',
+      sort: ''
+    }
+    obj[e.target.className] = (e.target.value!=='')?e.target.value:-1;
+    this.props.filterAll(obj);
+  }
+
   importToken = () => {
     if (sessionStorage.length === 1) {
       auth();
@@ -16,34 +29,12 @@ export class HeaderContainer extends Component {
     }
   };
 
-  allIssues = () => {
-    this.props.issuesHandler();
-  };
-
   reset = () => {
     var authorDropDown = document.getElementById("authorDropDown");
     authorDropDown.selectedIndex = 0;
     var sortDropDown = document.getElementById("sortDropDown");
     sortDropDown.selectedIndex = 0;
-    this.allIssues();
-  };
-
-  statusButton = (e) => {
-    let status = '';
-    e.target.id === 'open' ? status = 'open' : status = 'closed';
-    this.props.openStateHandler(status);
-  }
-
-  authorDown = e => {
-    this.props.authorsHandler(e.target.value);
-  };
-
-  sortData = e => {
-    this.props.dataToSort(e);
-  };
-
-  searchInput = e => {
-    this.props.searchData(e);
+    this.props.issuesHandler();
   };
 
   render() {
@@ -56,8 +47,8 @@ export class HeaderContainer extends Component {
             <strong>{this.props.repoData.repo}</strong>
           </a>
           <input id="reset-button" onClick={this.reset} type="reset" />
-          <input
-            onKeyUp={this.searchInput}
+          <input className = 'search'
+            onKeyUp={this.filterData}
             type="text"
             placeholder="Search.."
           />
@@ -75,19 +66,20 @@ export class HeaderContainer extends Component {
             </a>
           </div>
           <div>
-            <button id = 'open' onClick={this.statusButton}>
+            <button value = 'open' className = 'state' onClick={this.filterData}>
               open {this.props.openState}
             </button>
           </div>
           <div>
-            <button id = 'closed' onClick={this.statusButton}>
+            <button value = 'closed' className = 'state' onClick={this.filterData}>
               closed {this.props.closeState}
             </button>
           </div>
           <div className="author-drop">
             <select
               id="authorDropDown"
-              onChange={this.authorDown}
+              className = 'authors'
+              onChange={this.filterData}
               defaultValue="Authors"
             >
               <option value="Authors" disabled>
@@ -101,7 +93,8 @@ export class HeaderContainer extends Component {
           <div className="sortDrop">
             <select
               id="sortDropDown"
-              onChange={this.sortData}
+              className = 'sort'
+              onChange={this.filterData}
               defaultValue="Sort"
             >
               <option value="Sort" disabled>

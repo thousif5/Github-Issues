@@ -5,6 +5,13 @@ const repoData = {
 
 let repoOwner = repoData.owner+'/'+repoData.repo;
 
+export const getFilter = obj => dispatch => {
+  dispatch({
+    type: 'ALL_FILTER',
+    payload: obj
+  })
+}
+
 export const getData = val => dispatch => {
   fetch(`https://api.github.com/repos/${repoOwner}/issues?state=all&page=${val}&per_page=7`)
   .then(res => res.json())
@@ -12,23 +19,13 @@ export const getData = val => dispatch => {
     type: 'GET_DATA',
     payload: {issues, val}
   }))
-  .catch(err => console.log(err))
+  .catch(err => alert('Unable to fetch', err.message))
 }
 
 export const loginCheck = () => dispatch => {
   dispatch ({
     type: "LOGIN",
   })
-}
-
-export const setStatus = (status, page) => dispatch => {
-  fetch(`https://api.github.com/repos/${repoOwner}/issues?state=${status}&page=${page}&per_page=7`)
-  .then(res => res.json())
-  .then(issues => dispatch({
-    type: 'STATUS_UPDATE',
-    payload: {issues}
-  }))
-  .catch(err => console.log(err))
 }
 
 export const handleChange = (e) => dispatch => {
@@ -38,31 +35,7 @@ export const handleChange = (e) => dispatch => {
       type: 'LABELS_FILTER',
       payload: {issues, e}
     }))
-    .catch(err => console.log(err))
-}
-
-export const getAuthorsFiltered = (e,page) => dispatch => {
-  fetch(`https://api.github.com/repos/${repoOwner}/issues?page=${page}&per_page=7`)
-    .then(res => res.json())
-    .then(issues => dispatch({
-      type: 'AUTHORS_FILTER',
-      payload: {issues, e}
-    }))
-    .catch(err => console.log(err))
-}
-
-export const doSort = sorted => dispatch => {
-  dispatch({
-    type: 'SORT',
-    payload: sorted
-  })
-}
-
-export const searchData = (e, value) => dispatch => {
-  dispatch({
-    type: 'SEARCH',
-    payload: {e, value}
-  })
+    .catch(err => alert('unable to fetch', err.message))
 }
 
 export const getLabelsData = () => dispatch => {
@@ -74,5 +47,5 @@ export const getLabelsData = () => dispatch => {
         payload: labelsData
       })
       )
-      .catch(err => console.log(err))
+      .catch(err => alert('unable to fetch', err.message))
 }

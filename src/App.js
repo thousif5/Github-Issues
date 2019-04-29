@@ -2,13 +2,7 @@ import React, { Component } from "react";
 import HeaderContainer from "./components/HeaderContainer";
 import IssuesContainer from "./components/IssuesContainer";
 import { connect } from "react-redux";
-import {
-  getData,
-  doSort,
-  setStatus,
-  getAuthorsFiltered,
-  searchData
-} from "./actions/IssueActions";
+import { getData, getFilter } from "./actions/IssueActions";
 import Pagination from "./components/Pagination";
 import moment from "moment";
 import "./App.css";
@@ -20,47 +14,48 @@ const repoData = {
 let repoOwner = repoData.owner + "/" + repoData.repo;
 let authorList = [];
 class App extends Component {
+  filterAll = (obj) => {
+    this.props.getFilter(obj);
+  }
+
+  allFilter = (data, filter) => {
+    if(filter.authors !== '') data = data.filter(item => item.user.login === filter.authors);
+    if(filter.sort !== '') data = this.sortHandler(data, filter.sort);
+    if(filter.search !== '') data = this.searchHandler(data, filter.search);
+    return data;
+  }
+
   issueData = () => {
     this.props.getData(this.props.page);
   };
 
-  // set status
-  openStateHandler = (status) => {
-    this.props.setStatus(status, this.props.page);
-  };
-
-  authorDropDown = (e) => {
-    this.props.getAuthorsFiltered(e, this.props.page);
-  };
-
-  sortHandler = e => {
-    let sortedData = [];
-    const newData = [...this.props.data];
-    if (e.target.value === "Oldest") {
-      sortedData = newData.sort((a, b) => {
+  sortHandler = (data, option) => {
+    if (option === "Oldest") {
+      data = data.sort((a, b) => {
         return moment(a.created_at) - moment(b.created_at);
       });
-    } else if (e.target.value === "Newest") {
-      sortedData = newData.sort((a, b) => {
+    } else if (option === "Newest") {
+      data = data.sort((a, b) => {
         return moment(b.created_at) - moment(a.created_at);
       });
-    } else if (e.target.value === "Recently Upadated") {
-      sortedData = newData.sort((a, b) => {
+    } else if (option === "Recently Upadated") {
+      data = data.sort((a, b) => {
         return moment(b.updated_at) - moment(a.updated_at);
       });
-    } else if (e.target.value === "Least Recently Updated") {
-      sortedData = newData.sort((a, b) => {
+    } else if (option === "Least Recently Updated") {
+      data = data.sort((a, b) => {
         return moment(a.updated_at) - moment(b.updated_at);
       });
     }
 
-    this.props.doSort(sortedData);
+    return data;
   };
 
-  searchHandler = e => {
-    if (e.key === "Enter") {
-      this.props.searchData(e.target.value, this.props.data);
-    }
+  searchHandler = (data, value) => {
+      data = data.filter(
+        issue => issue.title.toLowerCase().indexOf(value) !== -1
+      )
+      return data;
   };
 
   componentDidMount() {
@@ -74,7 +69,16 @@ class App extends Component {
   };
 
   render() {
-    if (this.props.data === null) {
+
+    let newData = this.props.data.data;
+    let filter = this.props.data.filter;
+
+
+    newData = this.allFilter(newData,filter);
+    let openData = newData.filter(val => val.state === 'open').length
+    let closeData = newData.filter(val => val.state === 'closed').length
+     if(filter.state !== '') newData = newData.filter(val => val.state === filter.state)
+    if (newData === null) {
       return (
         // loading animation css
         <div className="loading">
@@ -96,19 +100,17 @@ class App extends Component {
       return (
         <div className="App">
           <HeaderContainer
+            filterAll = {this.filterAll}
             repoData={repoData}
             repoOwner={repoOwner}
             issuesHandler={this.issueData}
-            openStateHandler={this.openStateHandler}
-            openState={this.props.open}
-            closeState={this.props.close}
+            openState={openData}
+            closeState={closeData}
             authors={authorList}
             authorsHandler={this.authorDropDown}
-            dataToSort={this.sortHandler}
-            searchData={this.searchHandler}
           />
           <div className="issues-data">
-            {this.props.data.map(item => (
+            {newData.map(item => (
               <IssuesContainer value={item} />
             ))}
           </div>
@@ -124,20 +126,17 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    data: state.issues.data,
+    data: state.issues,
     page: state.issues.page,
-    open: state.issues.open,
-    close: state.issues.close,
     authorList: state.issues.authorList.forEach(issue => {
       if (!authorList.includes(issue.user.login)) {
         authorList.push(issue.user.login);
       }
     }),
-    issuesData: state.issues.data
   };
 };
 
 export default connect(
   mapStateToProps,
-  { getData, doSort, setStatus, getAuthorsFiltered, searchData }
+  { getData, getFilter }
 )(App);

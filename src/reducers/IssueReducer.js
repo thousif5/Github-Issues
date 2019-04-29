@@ -2,23 +2,42 @@ const initialState = {
   data: [],
   name: [],
   labels: [],
-  open: "",
-  close: "",
   authorList: [],
   page: 1,
-  signed: sessionStorage.getItem("signed")
+  signed: sessionStorage.getItem("signed"),
+ filter : {
+    state: '',
+    authors: '',
+    label: '',
+    search: '',
+    sort: ''
+  }
 };
 
 const IssueReducer = (state = initialState, action) => {
+  if(action.type === 'ALL_FILTER') {
+    let target = Object.assign({},state.filter);
+    let keys = Object.keys(state.filter)
+    keys.forEach(ele => {
+      if(action.payload[ele] !== target[ele] && action.payload[ele] !== '') target[ele] = action.payload[ele]
+      if(action.payload[ele] === -1) target[ele] = ''
+    })
+    return {
+      ...state,
+      filter: target
+    }
+  }
+
   if (action.type === "GET_DATA") {
+    let filterReset = Object.assign({},state.filter);
+    let keys = Object.keys(state.filter)
+    keys.forEach(ele => {filterReset[ele]='' })
     return {
       ...state,
       data: action.payload.issues,
-      open: action.payload.issues.filter(item => item.state === "open").length,
-      close: action.payload.issues.filter(item => item.state === "closed")
-        .length,
       authorList: action.payload.issues,
-      page: action.payload.val
+      page: action.payload.val,
+      filter:filterReset
     };
   }
 
@@ -28,16 +47,6 @@ const IssueReducer = (state = initialState, action) => {
     return {
       ...state,
       signed: status
-    };
-  }
-
-  if (action.type === "STATUS_UPDATE") {
-    return {
-      ...state,
-      data: action.payload.issues,
-      open: action.payload.issues.filter(item => item.state === "open").length,
-      close: action.payload.issues.filter(item => item.state === "closed")
-        .length
     };
   }
 
@@ -53,32 +62,6 @@ const IssueReducer = (state = initialState, action) => {
     return {
       ...state,
       labels: action.payload
-    };
-  }
-
-  if (action.type === "AUTHORS_FILTER") {
-    let newData = action.payload.issues.filter(
-      issue => issue.user.login === action.payload.e
-    );
-    return {
-      ...state,
-      data: newData.filter(issue => issue.user.login === action.payload.e)
-    };
-  }
-
-  if (action.type === "SORT") {
-    return {
-      ...state,
-      data: action.payload
-    };
-  }
-
-  if (action.type === "SEARCH") {
-    return {
-      ...state,
-      data: action.payload.value.filter(
-        issue => issue.title.toLowerCase().indexOf(action.payload.e) !== -1
-      )
     };
   }
 

@@ -33,7 +33,7 @@ export class BodyContainer extends Component {
       return (
         <div className="comment-username">
           <div>
-            <h5>thousif7:</h5>
+            <h5>{sessionStorage.getItem('name')}:</h5>
           </div>
           <div className="add-comments">
             <input
